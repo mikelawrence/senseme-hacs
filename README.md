@@ -1,4 +1,4 @@
-[![License][license-shield]](LICENSE.md)[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![License](https://img.shields.io/github/license/mikelawrence/senseme-hacs)](LICENSE) [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 
 # Home Assistant SenseME fan and light
 
