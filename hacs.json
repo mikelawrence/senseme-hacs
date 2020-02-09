@@ -1,0 +1,7 @@
+{
+  "name": "SenseME",
+  "domains": [
+    "fan",
+    "light"
+  ]
+}

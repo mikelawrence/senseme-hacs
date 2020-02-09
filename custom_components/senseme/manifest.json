@@ -1,0 +1,8 @@
+{
+    "domain": "senseme",
+    "name": "SenseME integration",
+    "documentation": "https://github.com/mikelawrence/hacs-senseme",
+    "dependencies": [],
+    "codeowners": [],
+    "requirements": ["SenseMe==0.1.5"]
+}
