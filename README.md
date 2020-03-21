@@ -1,4 +1,4 @@
-# Home Assistant integration for Big Ass Fans/Haiku with SenseME fans [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+# Home Assistant integration for SenseME fans [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This component provides control of these fans and light using Home Assistant (HA). The occupancy sensor will also monitored.
 
