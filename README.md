@@ -1,45 +1,52 @@
-[![License](https://img.shields.io/github/license/mikelawrence/senseme-hacs)](LICENSE) [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+# Home Assistant integration for Big Ass Fans/Haiku with SenseME fans [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-# Home Assistant SenseME fan and light
+The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This component provides control of these fans and light using Home Assistant (HA). The occupancy sensor will also monitored.
 
-The Haiku with SenseME fan is a WiFi connected fan and installable light from Big Ass Fans. This component provides control of these fans and light using Home Assistant.
+Now [aiosenseme](https://github.com/mikelawrence/aiosenseme) is used as the underlying library. It is asynchronous and fits well with Home Assistant and has several key new features like automatic fan discovery and push updates. It keeps a socket open the each fan added Home Assistant for the push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with these fans.
 
 ## Installation
 
-### Manual
-
-Copy the custom_components folder to your own hassio config folder.
-
 ### HACS
 
-Click on Settings in Home Assistant Community Store. Add this repository ```https://github.com/mikelawrence/hacs-senseme``` to Custom Repositories as an Integration.
+If you have HACS installed on Home Assistant then just search integrations for **SenseME** and install.
 
-## Configuration
+### Manual
 
-The Haiku with SenseME fan component will automatically discover and create a fan and light for each discovered fan. See next paragraph to prevent the light from being added if you don't have one. Setting ```max_number_fans:``` to the number of Haiku fans on your network will speed up the discovery process but is not required. If ```include:``` is specified, discovered fans with a matching name will be added. If ```exclude:``` is specified, discovered fans with a matching name will NOT be added. If both ```include:``` and ```exclude:``` are specified, only ```include:``` will be honored. If neither ```include:``` and ```exclude:``` are specified, all auto-detected fans will be added.
+Copy the custom_components folder of this repository to your config folder and restart Home Assistant.
 
-For included fans you can specify a ```friendly_name``` to use instead of ```name``` in Home Assistant. This is handy for grouped fans. Controlling any fan in a group will affect all fans of that group. Default value is the same as ```name```. Also new in the include section is the ```has_light``` boolean which when ```true``` will add a light component along with the fan. The default for ```has_light``` is ```true```. The included fan section must have a ```name``` variable and it must must match the name in the Haiku app.
+## Configuration using Home Assistant frontend
+
+* Go to **Configuration -> Integrations**.
+* Click on the **+** in the bottom right corner to add a new integration.
+* Search and select **SenseME** integration from the list.
+* Click the **Submit** button on the popup window. The SenseME component will automatically detect SenseME fans on the network and setup a fan, light (if installed) and an occupancy sensor.
+
+## Using the SenseME integration
+
+The SenseME integration supports speed, direction and whoosh (in HA it's called oscillate) for fans. If your fan has a light installed it will automatically be detected and added to Home Assistant.
+
+Fans have an occupancy sensor which is also added to Home Assistant but I have not looked at how well it performs. As far as I can tell there are no adjustments for this sensor so what you see is what you get.
+
+The Haiku App from Big Ass Fans supports grouping fans into rooms. Changing any fan in a room changes all fans in that room including those in Home Assistant. Keep in mind the lights installed in fans follow the same room grouping.
+
+## Breaking Changes
+
+From version 2.0 on this integration is configured via the Home Assistant frontend only and will no longer allow configuration via YAML. You need to remove the ```senseme:``` section from your configuration file the eliminate to error that pops up each time you restart.
+
+## Issues
+
+* Sometimes SenseME fans just don't respond to discovery packets. It happens enough for me to mention it here. You will have to keep trying to add the SenseME integration until at least one fan is detected. From there all fans will be eventually detected by the periodic discovery built-in to the integration. If your fans are grayed out when you restart Home Assistant it just means the initial discovery didn't detect them but again the periodic discovery will eventually detect them.
+
+* SenseME fans will occasionally drop the connection to Home Assistant. The integration will detect this and automatically reconnect. If it was the fan that dropped the connection this integration will usually reconnect within a minute. I'm not sure why but if the fan is powered off it can take a long time to detect the lost connection and that time varies based on what platform Home Assistant Core is running. On my development platform (Windows Subsystem for Linux running Ubuntu) a powered off fan is detected in a couple of minutes. Home Assistant running on a Raspberry Pi takes upwards of 25 minutes to detect lost connections.
+
+## Debugging
+
+To aid in debugging you can add the following to your configuration.yaml file. Be sure not to duplicate the ```logger:``` section.
 
 ```yaml
-# enable Haiku with SenseMe ceiling fans
-senseme:
-  max_number_fans: 2
-  # used to include only specific fans
-  include:
-    - name: "Studio Vault Fan"
-      friendly_name: "Studio Fan"
-      has_light: false
-    - name: "Family Room Fan"
-  # or use exclude to prevent specific auto-detected fan
-  exclude:
-    - "Studio Beam Fan"
+logger:
+  default: error
+  logs:
+    custom_components.senseme: error
+    aiosenseme: debug
 ```
-
-## Credits
-
-Thanks to TomFaulkner and his [SenseMe](https://github.com/TomFaulkner/SenseMe) python library. This library does the real work in controlling the Big Ass Fans.
-
-## Problems
-
-* Occasionally changes to the fan state fail to connect to fan and make the change, usually as a network (python socket) error. Same thing is true for the SenseMe background task which gets the complete fan state every minute.
-* Originally the Senseme custom component auto-detected both the existence of a light and the fan's group but longer term usage showed a problem with consistently auto-detecting these values. This version no longer auto-detects these values and requires the user to specify them in advance.

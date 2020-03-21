@@ -1,0 +1,15 @@
+{
+  "config": {
+    "title": "SenseME",
+    "step": {
+      "confirm": {
+        "title": "SenseME",
+        "description": "Do you want to set up SenseME?"
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single configuration of SenseME is possible.",
+      "no_devices_found": "No SenseME devices found on the network."
+    }
+  }
+}

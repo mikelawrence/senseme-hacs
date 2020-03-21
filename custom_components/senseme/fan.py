@@ -1,50 +1,70 @@
-"""Support for Big Ass Fans with SenseME ceiling fan."""
+"""Support for Big Ass Fans SenseME fan."""
 import logging
-import socket
-from datetime import timedelta
+import traceback
 
-from homeassistant.const import STATE_ON, STATE_OFF, STATE_UNKNOWN
 from homeassistant.components.fan import (
-    FanEntity,
-    DOMAIN,
-    SPEED_OFF,
-    SUPPORT_SET_SPEED,
-    SUPPORT_OSCILLATE,
-    SUPPORT_DIRECTION,
     DIRECTION_FORWARD,
     DIRECTION_REVERSE,
+    SPEED_OFF,
+    SUPPORT_DIRECTION,
+    SUPPORT_OSCILLATE,
+    SUPPORT_SET_SPEED,
+    FanEntity,
 )
-from custom_components.senseme import DATA_HUBS
 
-SCAN_INTERVAL = timedelta(seconds=15)
+from .const import DOMAIN, UPDATE_RATE
+
 
 _LOGGER = logging.getLogger(__name__)
 
-_VALID_SPEEDS = ["off", "1", "2", "3", "4", "5", "6", "7"]
-_VALID_DIRECTIONS = [DIRECTION_FORWARD, DIRECTION_REVERSE]
+
+async def async_setup_entry(hass, entry, async_add_entities):
+    """Set up SenseME fans."""
+    if hass.data.get(DOMAIN) is None:
+        hass.data[DOMAIN] = {}
+    if hass.data[DOMAIN].get("fan_devices") is None:
+        hass.data[DOMAIN]["fan_devices"] = []
+
+    async def async_discovered_fans(fans: list):
+        """Async handle (re)discovered SenseME fans."""
+        new_fans = []
+        for fan in fans:
+            try:
+                if fan not in hass.data[DOMAIN]["fan_devices"]:
+                    if "Haiku Fan" in fan.model:
+                        fan.refreshMinutes = UPDATE_RATE
+                        hass.data[DOMAIN]["fan_devices"].append(fan)
+                        new_fans.append(HASensemeFan(fan))
+                        _LOGGER.debug("Added new fan: %s" % fan.name)
+                    else:
+                        # ignore a fan by adding to the fan_devices list
+                        # and NOT adding it with async_add_entities()
+                        _LOGGER.warning(
+                            "Discovered unknown SenseME device model='%s'" % fan.model
+                        )
+                        hass.data[DOMAIN]["fan_devices"].append(fan)
+            except Exception:
+                _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
+        if len(new_fans) > 0:
+            hass.add_job(async_add_entities, new_fans)
+
+    hass.data[DOMAIN]["discovery"].add_callback(async_discovered_fans)
 
 
-# pylint: disable=unused-argument
-def setup_platform(hass, config, add_devices_callback, discovery_info=None):
-    """Set up the Haiku with SenseME ceiling fan platform."""
-    fans = []
-    for hub in hass.data[DATA_HUBS]:
-        fans.append(HaikuSenseMeFan(hass, hub))
-    add_devices_callback(fans)
+class HASensemeFan(FanEntity):
+    """SenseME ceiling fan component."""
 
-
-class HaikuSenseMeFan(FanEntity):
-    """Representation of a Haiku with SenseME ceiling fan."""
-
-    def __init__(self, hass, hub) -> None:
+    def __init__(self, device) -> None:
         """Initialize the entity."""
-        self.hass = hass
-        self._hub = hub
-        self._name = hub.friendly_name
+        self.device = device
+        self._name = device.name
         self._supported_features = (
             SUPPORT_SET_SPEED | SUPPORT_OSCILLATE | SUPPORT_DIRECTION
         )
-        _LOGGER.debug("%s: Created HaikuSenseMeFan" % self.name)
+
+    async def async_added_to_hass(self):
+        """Add data updated listener after this object has been initialized."""
+        self.device.add_callback(lambda: self.async_write_ha_state())
 
     @property
     def name(self) -> str:
@@ -52,33 +72,78 @@ class HaikuSenseMeFan(FanEntity):
         return self._name
 
     @property
+    def device_info(self):
+        """Get device info for Home Assistant."""
+        info = {
+            "connections": {("mac", self.device.id)},
+            "name": self.device.name,
+            "manufacturer": "Big Ass Fans",
+            "model": self.device.model,
+        }
+        if self.device.fw_version:
+            info["sw_version"] = self.device.fw_version
+        return info
+
+    @property
+    def unique_id(self):
+        """Return a unique identifier for this fan."""
+        uid = f"{self.device.id}-FAN"
+        return uid
+
+    @property
     def should_poll(self) -> bool:
-        """Polling is needed for this fan."""
-        return True
+        """This fan's state is pushed."""
+        return False
 
     @property
-    def speed(self) -> str:
-        return self._hub.fan_speed
+    def device_state_attributes(self) -> dict:
+        """Gets the current device state attributes."""
+        attributes = {
+            "autocomfort": self.device.fan_autocomfort,
+            "smartmode": self.device.fan_smartmode,
+        }
+        if self.device.group_status:
+            attributes["group"] = self.device.group_name
+        return attributes
 
     @property
-    def speed_list(self) -> list:
-        """Get the list of available speeds."""
-        return _VALID_SPEEDS
+    def available(self) -> bool:
+        """Return True if available (operational)."""
+        return self.device.connected
 
     @property
     def is_on(self) -> bool:
         """Return true if the fan is on."""
-        return self._hub.fan_on
+        return self.device.fan_on
 
     @property
-    def oscillating(self):
-        """Return the oscillation state."""
-        return self._hub.whoosh_on
+    def speed(self) -> str:
+        spd = str(self.device.fan_speed)
+        if spd == "0":
+            spd = SPEED_OFF
+        return spd
 
     @property
-    def direction(self) -> str:
+    def speed_list(self) -> list:
+        """Get the list of available speeds."""
+        speeds = [SPEED_OFF]
+        for i in range(self.device.fan_speed_min, self.device.fan_speed_max + 1):
+            speeds.append(str(i))
+        return speeds
+
+    @property
+    def current_direction(self) -> str:
         """Return the fan direction."""
-        return self._hub.fan_direction
+        dir = self.device.fan_dir
+        if dir == "FWD":
+            return DIRECTION_FORWARD
+        else:
+            return DIRECTION_REVERSE
+
+    @property
+    def oscillating(self) -> bool:
+        """Return the oscillation state."""
+        return self.device.fan_whoosh
 
     @property
     def supported_features(self) -> int:
@@ -86,84 +151,35 @@ class HaikuSenseMeFan(FanEntity):
         return self._supported_features
 
     def turn_on(self, speed: str = None, **kwargs) -> None:
-        """Turn on the fan."""
-        retryCount = 2
-        while retryCount != 0:
-            try:
-                if speed == None:
-                    self._hub.fan_on = True
-                else:
-                    self._hub.fan_speed = speed
-                break
-            except socket.error as e:
-                retryCount -= 1
-                if retryCount == 0:
-                    raise
+        """Turn the fan on with speed control."""
+        if speed is None:
+            # no speed, just turn the fan on
+            self.device.fan_on = True
+        else:
+            # set the speed, which will also turn on/off fan
+            if speed == "off":
+                self.device.fan_speed = 0
+            else:
+                self.device.fan_speed = int(speed)
 
     def turn_off(self, **kwargs) -> None:
-        """Turn off the fan."""
-        retryCount = 2
-        while retryCount != 0:
-            try:
-                self._hub.fan_on = False
-                break
-            except socket.error as e:
-                retryCount -= 1
-                if retryCount == 0:
-                    raise
+        """Turn the fan off."""
+        self.device.fan_on = False
 
     def set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
-        # Validate speed
-        if speed in _VALID_SPEEDS or speed == STATE_UNKNOWN:
-            retryCount = 2
-            while retryCount != 0:
-                try:
-                    self._hub.fan_speed = speed
-                    break
-                except socket.error as e:
-                    retryCount -= 1
-                    if retryCount == 0:
-                        raise
+        if speed == "off":
+            self.device.fan_speed = 0
         else:
-            _LOGGER.error(
-                "Received invalid speed: %s. " + "Expected: %s.",
-                speed,
-                self._speed_list,
-            )
-            self._speed = None
+            self.device.fan_speed = int(speed)
 
     def oscillate(self, oscillating: bool) -> None:
-        """Set oscillation."""
-        retryCount = 2
-        while retryCount != 0:
-            try:
-                self._hub.whoosh_on = oscillating
-                break
-            except socket.error as e:
-                retryCount -= 1
-                if retryCount == 0:
-                    raise
+        """Set oscillation (Whoosh on SenseME fan)."""
+        self.device.fan_whoosh = oscillating
 
     def set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
-        if direction in _VALID_DIRECTIONS:
-            retryCount = 2
-            while retryCount != 0:
-                try:
-                    self._hub.fan_direction = direction
-                    break
-                except socket.error as e:
-                    retryCount -= 1
-                    if retryCount == 0:
-                        raise
+        if direction == DIRECTION_FORWARD:
+            self.device.fan_dir = "FWD"
         else:
-            _LOGGER.error(
-                "Received invalid direction: %s. " + "Expected: %s.",
-                direction,
-                ", ".join(_VALID_DIRECTIONS),
-            )
-
-    def update(self) -> None:
-        """Update current fan values."""
-        self._hub.update()
+            self.device.fan_dir = "REV"
