@@ -2,6 +2,7 @@
 
 ## 2.0.0 - New asynchronous library
 
+* Now a HACS default integration.
 * [Breaking Change] Configuration via Home Assistant frontend only.
 * Supports fan, light and occupancy binary_sensor platforms.
 * Fan status is pushed for more or less instantaneous updates.
@@ -10,6 +11,7 @@
 
 ## 1.0.0 - First HACS version
 
+* SenseME now supports HACS custom install.
 * Supported fan and light platforms.
 * Uses [SenseMe library](https://pypi.org/project/SenseMe/) to control fans.
 * Polling is used to get the status of the fan which was problematic and sluggish.
