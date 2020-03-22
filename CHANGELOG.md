@@ -1,5 +1,10 @@
 # HACS version of the Home Assistant SenseME integration
 
+## 2.0.1 - Fix L-Series unknown model error
+
+* Added L-Series Haiku fan to list of known models.
+* Unknown models are now added with a warning instead of being ignored.
+
 ## 2.0.0 - New asynchronous library
 
 * Now a HACS default integration.

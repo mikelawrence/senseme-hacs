@@ -31,18 +31,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
         for fan in fans:
             try:
                 if fan not in hass.data[DOMAIN]["fan_devices"]:
-                    if "Haiku Fan" in fan.model:
-                        fan.refreshMinutes = UPDATE_RATE
-                        hass.data[DOMAIN]["fan_devices"].append(fan)
-                        new_fans.append(HASensemeFan(fan))
-                        _LOGGER.debug("Added new fan: %s" % fan.name)
-                    else:
-                        # ignore a fan by adding to the fan_devices list
-                        # and NOT adding it with async_add_entities()
+                    fan.refreshMinutes = UPDATE_RATE
+                    hass.data[DOMAIN]["fan_devices"].append(fan)
+                    new_fans.append(HASensemeFan(fan))
+                    _LOGGER.debug("Added new fan: %s" % fan.name)
+                    if "Haiku" not in fan.model and "Fan" not in fan.model:
                         _LOGGER.warning(
                             "Discovered unknown SenseME device model='%s'" % fan.model
                         )
-                        hass.data[DOMAIN]["fan_devices"].append(fan)
             except Exception:
                 _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
         if len(new_fans) > 0:
