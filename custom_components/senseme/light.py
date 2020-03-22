@@ -26,17 +26,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
         for fan in fans:
             try:
                 if fan not in hass.data[DOMAIN]["light_devices"]:
-                    if "Haiku Fan" in fan.model:
-                        if fan.has_light:
-                            fan.refreshMinutes = UPDATE_RATE
-                            hass.data[DOMAIN]["light_devices"].append(fan)
-                            light = HASensemeLight(fan)
-                            new_lights.append(light)
-                            _LOGGER.debug("Added new light: %s" % light.name)
-                    else:
-                        # ignore a light by adding to the light_devices list
-                        # and NOT adding it with async_add_entities()
+                    if fan.has_light:
+                        fan.refreshMinutes = UPDATE_RATE
                         hass.data[DOMAIN]["light_devices"].append(fan)
+                        light = HASensemeLight(fan)
+                        new_lights.append(light)
+                        _LOGGER.debug("Added new light: %s" % light.name)
             except Exception:
                 _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
         if len(new_lights) > 0:

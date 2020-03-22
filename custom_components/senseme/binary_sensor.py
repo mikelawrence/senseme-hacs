@@ -25,16 +25,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
         for fan in fans:
             try:
                 if fan not in hass.data[DOMAIN]["sensor_devices"]:
-                    if "Haiku Fan" in fan.model:
-                        fan.refreshMinutes = UPDATE_RATE
-                        hass.data[DOMAIN]["sensor_devices"].append(fan)
-                        sensor = HASensemeOccupancySensor(fan)
-                        new_sensors.append(sensor)
-                        _LOGGER.debug("Added new sensor: %s" % sensor.name)
-                    else:
-                        # ignore a sensor by adding it to the sensor_devices
-                        # list and NOT adding it with async_add_entities()
-                        hass.data[DOMAIN]["sensor_devices"].append(fan)
+                    fan.refreshMinutes = UPDATE_RATE
+                    hass.data[DOMAIN]["sensor_devices"].append(fan)
+                    sensor = HASensemeOccupancySensor(fan)
+                    new_sensors.append(sensor)
+                    _LOGGER.debug("Added new sensor: %s" % sensor.name)
             except Exception:
                 _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
         if len(new_sensors) > 0:
