@@ -4,7 +4,7 @@
   "config_flow": true,
   "documentation": "https://www.github.com/mikelawrence/senseme-hacs",
   "requirements": [
-    "aiosenseme>=0.1.1,<0.2.0"
+    "aiosenseme>=0.2.0,<0.3.0"
   ],
   "ssdp": [],
   "zeroconf": [],

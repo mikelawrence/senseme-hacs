@@ -1,4 +1,8 @@
-# HACS version of the Home Assistant SenseME integration
+# Changelog for Home Assistant integration for SenseME fans
+
+## 2.0.3 - Support aiosenseme update
+
+* Support API changes in aiosenseme v0.2.0.
 
 ## 2.0.2 - Fix L-Series unknown model error
 

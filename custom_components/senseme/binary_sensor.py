@@ -60,6 +60,7 @@ class HASensemeOccupancySensor(BinarySensorDevice):
         """Get device info for Home Assistant."""
         info = {
             "connections": {("mac", self.device.id)},
+            "identifiers": {("token", self.device.network_token)},
             "name": self.device.name,
             "manufacturer": "Big Ass Fans",
             "model": self.device.model,
@@ -83,8 +84,8 @@ class HASensemeOccupancySensor(BinarySensorDevice):
     def device_state_attributes(self) -> dict:
         """Gets the current state attributes."""
         attributes = {}
-        if self.device.group_status:
-            attributes["group"] = self.device.group_name
+        if self.device.room_status:
+            attributes["room"] = self.device.room_name
         return attributes
 
     @property
