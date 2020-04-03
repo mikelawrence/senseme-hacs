@@ -1,5 +1,5 @@
 """Config flow for SenseME."""
-from aiosenseme import Discover_Any
+import aiosenseme
 
 from homeassistant import config_entries
 from homeassistant.helpers import config_entry_flow
@@ -9,7 +9,7 @@ from .const import DOMAIN
 
 async def _async_has_devices(hass) -> bool:
     """Return if there are devices that can be discovered."""
-    return await Discover_Any(1)
+    return await aiosenseme.discover_any(1)
 
 
 config_entry_flow.register_discovery_flow(

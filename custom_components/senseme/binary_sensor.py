@@ -1,6 +1,5 @@
 """Support for Big Ass Fans SenseME occupancy sensor."""
 import logging
-import traceback
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OCCUPANCY,
@@ -23,15 +22,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
         """Async handle a (re)discovered SenseME fans."""
         new_sensors = []
         for fan in fans:
-            try:
-                if fan not in hass.data[DOMAIN]["sensor_devices"]:
-                    fan.refreshMinutes = UPDATE_RATE
-                    hass.data[DOMAIN]["sensor_devices"].append(fan)
-                    sensor = HASensemeOccupancySensor(fan)
-                    new_sensors.append(sensor)
-                    _LOGGER.debug("Added new sensor: %s" % sensor.name)
-            except Exception:
-                _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
+            if fan not in hass.data[DOMAIN]["sensor_devices"]:
+                fan.refreshMinutes = UPDATE_RATE
+                hass.data[DOMAIN]["sensor_devices"].append(fan)
+                sensor = HASensemeOccupancySensor(fan)
+                new_sensors.append(sensor)
+                _LOGGER.debug("Added new sensor: %s", sensor.name)
         if len(new_sensors) > 0:
             hass.add_job(async_add_entities, new_sensors)
 
@@ -48,7 +44,7 @@ class HASensemeOccupancySensor(BinarySensorDevice):
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
-        self.device.add_callback(lambda: self.async_write_ha_state())
+        self.device.add_callback(self.async_write_ha_state)
 
     @property
     def name(self):
@@ -77,12 +73,12 @@ class HASensemeOccupancySensor(BinarySensorDevice):
 
     @property
     def should_poll(self) -> bool:
-        """This sensor's state is pushed."""
+        """Sensor state is pushed."""
         return False
 
     @property
     def device_state_attributes(self) -> dict:
-        """Gets the current state attributes."""
+        """Get the current state attributes."""
         attributes = {}
         if self.device.room_status:
             attributes["room"] = self.device.room_name
@@ -90,7 +86,7 @@ class HASensemeOccupancySensor(BinarySensorDevice):
 
     @property
     def available(self) -> bool:
-        """Return True if available (operational)."""
+        """Return True if available/operational."""
         return self.device.connected
 
     @property

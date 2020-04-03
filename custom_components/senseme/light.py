@@ -1,6 +1,5 @@
 """Support for Big Ass Fans SenseME light."""
 import logging
-import traceback
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
@@ -24,16 +23,13 @@ async def async_setup_entry(hass, entry, async_add_entities):
         """Async handle a (re)discovered SenseME fans."""
         new_lights = []
         for fan in fans:
-            try:
-                if fan not in hass.data[DOMAIN]["light_devices"]:
-                    if fan.has_light:
-                        fan.refreshMinutes = UPDATE_RATE
-                        hass.data[DOMAIN]["light_devices"].append(fan)
-                        light = HASensemeLight(fan)
-                        new_lights.append(light)
-                        _LOGGER.debug("Added new light: %s" % light.name)
-            except Exception:
-                _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
+            if fan not in hass.data[DOMAIN]["light_devices"]:
+                if fan.has_light:
+                    fan.refreshMinutes = UPDATE_RATE
+                    hass.data[DOMAIN]["light_devices"].append(fan)
+                    light = HASensemeLight(fan)
+                    new_lights.append(light)
+                    _LOGGER.debug("Added new light: %s", light.name)
         if len(new_lights) > 0:
             hass.add_job(async_add_entities, new_lights)
 
@@ -51,7 +47,7 @@ class HASensemeLight(Light):
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
-        self.device.add_callback(lambda: self.async_write_ha_state())
+        self.device.add_callback(self.async_write_ha_state)
 
     @property
     def name(self):
@@ -80,12 +76,12 @@ class HASensemeLight(Light):
 
     @property
     def should_poll(self) -> bool:
-        """This lights's state is pushed."""
+        """Light state is pushed."""
         return False
 
     @property
     def device_state_attributes(self) -> dict:
-        """Gets the current device state attributes."""
+        """Get the current device state attributes."""
         attributes = {}
         if self.device.room_status:
             attributes["room"] = self.device.room_name
@@ -93,7 +89,7 @@ class HASensemeLight(Light):
 
     @property
     def available(self) -> bool:
-        """Return True if available (operational)."""
+        """Return True if available/operational."""
         return self.device.connected
 
     @property
@@ -106,7 +102,7 @@ class HASensemeLight(Light):
         """Return the brightness of the light."""
         light_brightness = self.device.light_brightness * 16
         if light_brightness == 256:
-            light_brightness == 255
+            light_brightness = 255
         return int(light_brightness)
 
     @property

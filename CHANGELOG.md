@@ -1,5 +1,10 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.0.4 - Support aiosenseme update
+
+* Support API changes in aiosenseme v0.3.0.
+* Cleanup pylint warnings.
+
 ## 2.0.3 - Support aiosenseme update
 
 * Support API changes in aiosenseme v0.2.0.

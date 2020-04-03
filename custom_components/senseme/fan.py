@@ -1,6 +1,5 @@
 """Support for Big Ass Fans SenseME fan."""
 import logging
-import traceback
 
 from homeassistant.components.fan import (
     DIRECTION_FORWARD,
@@ -29,18 +28,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
         """Async handle (re)discovered SenseME fans."""
         new_fans = []
         for fan in fans:
-            try:
-                if fan not in hass.data[DOMAIN]["fan_devices"]:
-                    fan.refreshMinutes = UPDATE_RATE
-                    hass.data[DOMAIN]["fan_devices"].append(fan)
-                    new_fans.append(HASensemeFan(fan))
-                    _LOGGER.debug("Added new fan: %s" % fan.name)
-                    if "Haiku" not in fan.model and "Fan" not in fan.model:
-                        _LOGGER.warning(
-                            "Discovered unknown SenseME device model='%s'" % fan.model
-                        )
-            except Exception:
-                _LOGGER.error("Discovered fan error\n%s" % traceback.format_exc())
+            if fan not in hass.data[DOMAIN]["fan_devices"]:
+                fan.refreshMinutes = UPDATE_RATE
+                hass.data[DOMAIN]["fan_devices"].append(fan)
+                new_fans.append(HASensemeFan(fan))
+                _LOGGER.debug("Added new fan: %s", fan.name)
+                if "Haiku" not in fan.model and "Fan" not in fan.model:
+                    _LOGGER.warning(
+                        "Discovered unknown SenseME device model='%s'", fan.model
+                    )
         if len(new_fans) > 0:
             hass.add_job(async_add_entities, new_fans)
 
@@ -60,7 +56,7 @@ class HASensemeFan(FanEntity):
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
-        self.device.add_callback(lambda: self.async_write_ha_state())
+        self.device.add_callback(self.async_write_ha_state)
 
     @property
     def name(self) -> str:
@@ -89,12 +85,12 @@ class HASensemeFan(FanEntity):
 
     @property
     def should_poll(self) -> bool:
-        """This fan's state is pushed."""
+        """Fan state is pushed."""
         return False
 
     @property
     def device_state_attributes(self) -> dict:
-        """Gets the current device state attributes."""
+        """Get the current device state attributes."""
         attributes = {
             "autocomfort": self.device.fan_autocomfort,
             "smartmode": self.device.fan_smartmode,
@@ -105,7 +101,7 @@ class HASensemeFan(FanEntity):
 
     @property
     def available(self) -> bool:
-        """Return True if available (operational)."""
+        """Return True if available/operational."""
         return self.device.connected
 
     @property
@@ -115,6 +111,7 @@ class HASensemeFan(FanEntity):
 
     @property
     def speed(self) -> str:
+        """Set the fan speed."""
         spd = str(self.device.fan_speed)
         if spd == "0":
             spd = SPEED_OFF
@@ -131,11 +128,10 @@ class HASensemeFan(FanEntity):
     @property
     def current_direction(self) -> str:
         """Return the fan direction."""
-        dir = self.device.fan_dir
-        if dir == "FWD":
+        direction = self.device.fan_dir
+        if direction == "FWD":
             return DIRECTION_FORWARD
-        else:
-            return DIRECTION_REVERSE
+        return DIRECTION_REVERSE
 
     @property
     def oscillating(self) -> bool:
