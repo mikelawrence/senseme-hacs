@@ -2,7 +2,7 @@
 
 ## 2.0.4 - Support aiosenseme update
 
-* Support API changes in aiosenseme v0.3.0.
+* Support API changes in aiosenseme v0.3.1.
 * Cleanup pylint warnings.
 
 ## 2.0.3 - Support aiosenseme update
