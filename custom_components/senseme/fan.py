@@ -10,9 +10,18 @@ from homeassistant.components.fan import (
     SUPPORT_SET_SPEED,
     FanEntity,
 )
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-from .const import DOMAIN, UPDATE_RATE
-
+from .const import (
+    CONF_ENABLE_DIRECTION,
+    CONF_ENABLE_DIRECTION_DEFAULT,
+    CONF_ENABLE_WHOOSH,
+    CONF_ENABLE_WHOOSH_DEFAULT,
+    DOMAIN,
+    EVENT_SENSEME_CONFIG_UPDATE,
+    UPDATE_RATE,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +40,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
             if fan not in hass.data[DOMAIN]["fan_devices"]:
                 fan.refreshMinutes = UPDATE_RATE
                 hass.data[DOMAIN]["fan_devices"].append(fan)
-                new_fans.append(HASensemeFan(fan))
+                new_fans.append(HASensemeFan(hass, entry, fan))
                 _LOGGER.debug("Added new fan: %s", fan.name)
                 if "Haiku" not in fan.model and "Fan" not in fan.model:
                     _LOGGER.warning(
@@ -46,13 +55,38 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class HASensemeFan(FanEntity):
     """SenseME ceiling fan component."""
 
-    def __init__(self, device) -> None:
+    def __init__(self, hass, entry, device) -> None:
         """Initialize the entity."""
+
+        @callback
+        def options_updated():
+            """Handle signals of config entry being updated."""
+            self.schedule_update_ha_state()
+
         self.device = device
+        self._entry = entry
         self._name = device.name
-        self._supported_features = (
-            SUPPORT_SET_SPEED | SUPPORT_OSCILLATE | SUPPORT_DIRECTION
+        async_dispatcher_connect(hass, EVENT_SENSEME_CONFIG_UPDATE, options_updated)
+
+    @property
+    def _direction_enabled(self) -> bool:
+        """Return True when Direction is enabled in the options."""
+        if CONF_ENABLE_DIRECTION in self._entry.options:
+            return self._entry.options.get(
+                CONF_ENABLE_DIRECTION, CONF_ENABLE_DIRECTION_DEFAULT
+            )
+        return self._entry.data.get(
+            CONF_ENABLE_DIRECTION, CONF_ENABLE_DIRECTION_DEFAULT
         )
+
+    @property
+    def _whoosh_enabled(self) -> bool:
+        """Return True when Whoosh is enabled in the options."""
+        if CONF_ENABLE_WHOOSH in self._entry.options:
+            return self._entry.options.get(
+                CONF_ENABLE_WHOOSH, CONF_ENABLE_WHOOSH_DEFAULT
+            )
+        return self._entry.data.get(CONF_ENABLE_WHOOSH, CONF_ENABLE_WHOOSH_DEFAULT)
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
@@ -128,20 +162,29 @@ class HASensemeFan(FanEntity):
     @property
     def current_direction(self) -> str:
         """Return the fan direction."""
-        direction = self.device.fan_dir
-        if direction == "FWD":
-            return DIRECTION_FORWARD
-        return DIRECTION_REVERSE
+        if self._direction_enabled:
+            direction = self.device.fan_dir
+            if direction == "FWD":
+                return DIRECTION_FORWARD
+            return DIRECTION_REVERSE
+        return None
 
     @property
     def oscillating(self) -> bool:
         """Return the oscillation state."""
-        return self.device.fan_whoosh
+        if self._whoosh_enabled:
+            return self.device.fan_whoosh
+        return None
 
     @property
     def supported_features(self) -> int:
         """Flag supported features."""
-        return self._supported_features
+        supported_features = SUPPORT_SET_SPEED
+        if self._whoosh_enabled:
+            supported_features |= SUPPORT_OSCILLATE
+        if self._direction_enabled:
+            supported_features |= SUPPORT_DIRECTION
+        return supported_features
 
     def turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on with speed control."""
@@ -168,11 +211,13 @@ class HASensemeFan(FanEntity):
 
     def oscillate(self, oscillating: bool) -> None:
         """Set oscillation (Whoosh on SenseME fan)."""
-        self.device.fan_whoosh = oscillating
+        if self._whoosh_enabled:
+            self.device.fan_whoosh = oscillating
 
     def set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
-        if direction == DIRECTION_FORWARD:
-            self.device.fan_dir = "FWD"
-        else:
-            self.device.fan_dir = "REV"
+        if self._direction_enabled:
+            if direction == DIRECTION_FORWARD:
+                self.device.fan_dir = "FWD"
+            else:
+                self.device.fan_dir = "REV"

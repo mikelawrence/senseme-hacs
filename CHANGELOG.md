@@ -1,5 +1,10 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.0.5 - Add configuration options
+
+* Added 'Enable Whoosh as Oscillate' configuration option.
+* Added 'Enable Direction' configuration option.
+
 ## 2.0.4 - Support aiosenseme update
 
 * Support API changes in aiosenseme v0.3.1.

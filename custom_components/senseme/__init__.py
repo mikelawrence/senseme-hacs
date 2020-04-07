@@ -1,15 +1,16 @@
 """The SenseME integration."""
 import asyncio
 import logging
-from aiosenseme import SensemeDiscovery
 
+from aiosenseme import SensemeDiscovery
 from homeassistant.components.binary_sensor import DOMAIN as BINARYSENSOR_DOMAIN
 from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-from .const import DOMAIN, DISCOVERY_UPDATE_RATE
+from .const import DISCOVERY_UPDATE_RATE, DOMAIN, EVENT_SENSEME_CONFIG_UPDATE
 
 PLATFORMS = [FAN_DOMAIN, LIGHT_DOMAIN, BINARYSENSOR_DOMAIN]
 
@@ -38,6 +39,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
     await asyncio.sleep(0.1)
+    entry.add_update_listener(async_config_entry_updated)
     return True
 
 
@@ -52,10 +54,15 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
     )
     if unload_ok:
-        hass.data[DOMAIN]["discovery"].stop()
+        hass.data[DOMAIN]["discovery"].remove_discovered_devices()
         hass.data[DOMAIN]["discovery"] = None
         hass.data[DOMAIN]["fan_devices"] = []
         hass.data[DOMAIN]["light_devices"] = []
         hass.data[DOMAIN]["sensor_devices"] = []
 
-    return False
+    return True
+
+
+async def async_config_entry_updated(hass, entry) -> None:
+    """Handle signals of config entry being updated."""
+    async_dispatcher_send(hass, EVENT_SENSEME_CONFIG_UPDATE)

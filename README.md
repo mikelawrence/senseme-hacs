@@ -31,6 +31,12 @@ Fans have an occupancy sensor which is also added to Home Assistant but I have n
 
 The Haiku App from Big Ass Fans supports grouping fans into rooms. Changing any fan in a room changes all fans in that room including those in Home Assistant. Keep in mind the lights installed in fans follow the same room grouping.
 
+## SenseME integration options
+
+Whoosh as oscillate can now be enabled/disabled as a configuration option across all fans. This option can be set when first adding the integration to Home Assistant or changed at any time by going to **Configuration -> Integrations -> SenseME** and selecting the gear icon at the top right.
+
+Direction is also enabled/disabled as a configuration option across all fans.
+
 ## Breaking Changes
 
 From version 2.0 on this integration is configured via the Home Assistant frontend only and will no longer allow configuration via YAML. You need to remove the ```senseme:``` section from your configuration file the eliminate the error that pops up each time you restart.

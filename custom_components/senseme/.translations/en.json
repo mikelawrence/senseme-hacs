@@ -6,10 +6,25 @@
         },
         "step": {
             "confirm": {
-                "description": "Do you want to set up SenseME?",
+                "data": {
+                    "enable_direction": "Enable Direction",
+                    "enable_whoosh": "Enable Whoosh as Oscillate"
+                },
+                "description": "Set up SenseME integration.",
                 "title": "SenseME"
             }
-        },
+    },
         "title": "SenseME"
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "enable_direction": "Enable Direction",
+                    "enable_whoosh": "Enable Whoosh as Oscillate"
+                },
+                "title": "SenseME settings"
+            }
+        }
     }
 }
