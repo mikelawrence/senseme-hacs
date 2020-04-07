@@ -39,7 +39,7 @@ Direction is also enabled/disabled as a configuration option across all fans.
 
 ## Breaking Changes
 
-From version 2.0 on this integration is configured via the Home Assistant frontend only and will no longer allow configuration via YAML. You need to remove the ```senseme:``` section from your configuration file the eliminate the error that pops up each time you restart.
+From v2.0.0 on this integration is configured via the Home Assistant frontend only and will no longer allow configuration via YAML. You need to remove the ```senseme:``` section from your configuration file the eliminate the error that pops up each time you restart.
 
 ## Issues
 
