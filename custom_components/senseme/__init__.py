@@ -12,6 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from .const import DISCOVERY_UPDATE_RATE, DOMAIN, EVENT_SENSEME_CONFIG_UPDATE
+from .version import __version__
 
 PLATFORMS = [FAN_DOMAIN, LIGHT_DOMAIN, BINARYSENSOR_DOMAIN]
 
@@ -30,7 +31,9 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up SenseME from a config entry."""
-    _LOGGER.debug("Using aiosenseme==%s",aiosenseme_version)
+    _LOGGER.debug(
+        "Integration=v%s, aiosenseme==%s", __version__, aiosenseme_version
+    )
     hass.data[DOMAIN] = {}
     # start SenseME discovery
     discovery = SensemeDiscovery(True, DISCOVERY_UPDATE_RATE)

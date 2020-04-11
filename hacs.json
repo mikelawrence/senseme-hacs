@@ -1,6 +1,5 @@
 {
   "name": "SenseME",
-  "render_readme": true,
   "domains": [
     "fan",
     "light",

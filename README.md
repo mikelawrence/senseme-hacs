@@ -1,10 +1,10 @@
 # Home Assistant integration for SenseME fans
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![Github version](https://img.shields.io/github/v/release/mikelawrence/senseme-hacs)](https://github.com/mikelawrence/senseme-hacs/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This component provides control of these fans and light using Home Assistant (HA). The occupancy sensor will also monitored.
+The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light. The occupancy sensor will also monitored.
 
-Now [aiosenseme](https://pypi.org/project/aiosenseme/) is used as the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open the each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with these fans.
+Now [aiosenseme](https://pypi.org/project/aiosenseme/) is used as the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while.
 
 ## Installation
 
