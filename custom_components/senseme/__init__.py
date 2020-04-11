@@ -3,6 +3,7 @@ import asyncio
 import logging
 
 from aiosenseme import SensemeDiscovery
+from aiosenseme import __version__ as aiosenseme_version
 from homeassistant.components.binary_sensor import DOMAIN as BINARYSENSOR_DOMAIN
 from homeassistant.components.fan import DOMAIN as FAN_DOMAIN
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
@@ -29,6 +30,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up SenseME from a config entry."""
+    _LOGGER.debug("Using aiosenseme==%s",aiosenseme_version)
     hass.data[DOMAIN] = {}
     # start SenseME discovery
     discovery = SensemeDiscovery(True, DISCOVERY_UPDATE_RATE)
