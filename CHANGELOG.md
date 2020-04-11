@@ -2,7 +2,7 @@
 
 ## 2.0.6 - Support aiosenseme update
 
-* Support changes in [aiosenseme v0.3.2]](https://github.com/mikelawrence/aiosenseme/releases/tag/v0.3.2).
+* Support changes in [aiosenseme v0.3.2](https://github.com/mikelawrence/aiosenseme/releases/tag/v0.3.2).
 
 ## 2.0.5 - Add configuration options
 
