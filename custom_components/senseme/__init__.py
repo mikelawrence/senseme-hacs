@@ -31,9 +31,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up SenseME from a config entry."""
-    _LOGGER.debug(
-        "Integration=v%s, aiosenseme==%s", __version__, aiosenseme_version
-    )
+    _LOGGER.debug("Integration=v%s, aiosenseme==%s", __version__, aiosenseme_version)
     hass.data[DOMAIN] = {}
     # start SenseME discovery
     discovery = SensemeDiscovery(True, DISCOVERY_UPDATE_RATE)
