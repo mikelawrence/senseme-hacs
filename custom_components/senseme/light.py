@@ -4,7 +4,7 @@ import logging
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     SUPPORT_BRIGHTNESS,
-    Light,
+    LightEntity,
 )
 
 from .const import DOMAIN, UPDATE_RATE
@@ -36,7 +36,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     hass.data[DOMAIN]["discovery"].add_callback(async_discovered_fans)
 
 
-class HASensemeLight(Light):
+class HASensemeLight(LightEntity):
     """Representation of a Big Ass Fans SenseME light."""
 
     def __init__(self, device):

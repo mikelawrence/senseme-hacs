@@ -3,7 +3,7 @@ import logging
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OCCUPANCY,
-    BinarySensorDevice,
+    BinarySensorEntity,
 )
 
 from .const import DOMAIN, UPDATE_RATE
@@ -36,7 +36,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     hass.data[DOMAIN]["discovery"].add_callback(async_discovered_fans)
 
 
-class HASensemeOccupancySensor(BinarySensorDevice):
+class HASensemeOccupancySensor(BinarySensorEntity):
     """Representation of a Big Ass Fans SenseME occupancy sensor."""
 
     def __init__(self, device):
