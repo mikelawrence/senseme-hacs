@@ -2,14 +2,19 @@
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light.
 
+* Requires Home Assistant 0.109.0 or greater.
+* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+* This integration is currently NOT compatible with the discontinued [Wireless Wall Control](https://www.bigassfans.com/docs/haiku/accessories/cutsheet-haiku-wall-control.pdf).
+
 ### Features
 
-* Supports Haiku and Haiku L fans.
+* Confirmed support of Haiku, Haiku H, and Haiku L fans.
+* Probably supports Haiku C fans.
 * Configuration via Home Assistant frontend.
 * Fan supports speed, direction and whoosh as oscillate.
 * Light supported if installed.
 * Occupancy sensor supported.
-* Control of any one fan in a room (Haiku App configured) affects all fans in the room.
+* Control of any one fan in a room (Haiku App configured) affects all fans in that room.
 
 ### Usage
 

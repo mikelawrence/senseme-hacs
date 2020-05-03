@@ -4,5 +4,6 @@
     "fan",
     "light",
     "binary_sensor"
-  ]
+  ],
+  "homeassistant": "0.109.0"
 }

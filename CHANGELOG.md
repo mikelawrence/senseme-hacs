@@ -1,8 +1,13 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.0.8 - Adjust to new requirements in Home Assistant
+
+* Move '.translations' directory to 'translations'.
+* Now requires Home Assistant 0.109 or higher.
+
 ## 2.0.7 - Fix L-Series Fans and Wall Controller problems
 
-* Haiku L-Series fan no longer have an occupancy sensor.
+* Haiku L-Series fans no longer have an occupancy sensor.
 * Ignore Wireless Wall Controllers by using [aiosenseme v0.3.3](https://github.com/mikelawrence/aiosenseme/releases/tag/v0.3.3).
 
 ## 2.0.6 - Support aiosenseme update
