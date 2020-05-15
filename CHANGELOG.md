@@ -1,13 +1,13 @@
 # Changelog for Home Assistant integration for SenseME fans
 
-## 2.0.9 - Fix new depreciations from Home Assistant
+## 2.0.9 - Fix new depreciations in Home Assistant
 
-* Fix under the hood depreciations from Home Assistant. No changes to integration functionality.
-* Now requires Home Assistant 0.110 or higher.
+* Fix under the hood depreciations in Home Assistant 0.110. No changes to integration functionality.
+* Requires Home Assistant 0.109 or higher.
 
 ## 2.0.8 - Adjust to new requirements in Home Assistant
 
-* Move '.translations' directory to 'translations'.
+* Move '.translations' directory to 'translations'. No changes to integration functionality.
 * Now requires Home Assistant 0.109 or higher.
 
 ## 2.0.7 - Fix L-Series Fans and Wall Controller problems

@@ -4,8 +4,14 @@ import logging
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     SUPPORT_BRIGHTNESS,
-    LightEntity,
 )
+try:
+    from homeassistant.components.light import LightEntity
+except ImportError:
+    # Prior to Home Assistant 0.110
+    from homeassistant.components.light import (
+        Light as LightEntity,
+    )
 
 from .const import DOMAIN, UPDATE_RATE
 

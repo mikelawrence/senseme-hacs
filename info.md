@@ -2,7 +2,7 @@
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light.
 
-* Requires Home Assistant 0.110.0 or greater.
+* Requires Home Assistant 0.109.0 or greater.
 * This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
 * This integration is currently NOT compatible with the discontinued [Wireless Wall Control](https://www.bigassfans.com/docs/haiku/accessories/cutsheet-haiku-wall-control.pdf).
 
@@ -25,7 +25,7 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 
 ### Options
 
-There are two global options available: **Enable Direction** and **Enable Whoosh as Oscillate**. **Enable Direction** is pretty obvious but the **Enable Whoosh as Oscillate** allows you to control Haiku Fan Whoosh mode via Home Assistant's built-in Oscillate fan control. To change options follow the instructions below.
+There are two global options available: **Enable Direction** and **Enable Whoosh as Oscillate**. With **Enable Direction** you can enable fan direction control for all SenseME fans in Home Assistant. **Enable Whoosh as Oscillate** allows you to control Haiku Fan Whoosh mode via Home Assistant's built-in Oscillate control. To change options follow the instructions below.
 
 * Go to **Configuration -> Integrations -> SenseME**
 * Click the gear icon at the top right.
