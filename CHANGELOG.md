@@ -1,5 +1,10 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.0.10 - Fix problems caused by 2.0.9
+
+* Removed changes in 2.0.9 that caused problems for some users. No changes to integration functionality.
+* Requires Home Assistant 0.110 or higher.
+
 ## 2.0.9 - Fix new depreciations in Home Assistant
 
 * Fix under the hood depreciations in Home Assistant 0.110. No changes to integration functionality.

@@ -1,16 +1,10 @@
 """Support for Big Ass Fans SenseME occupancy sensor."""
 import logging
 
-from homeassistant.components.binary_sensor import DEVICE_CLASS_OCCUPANCY
-
-try:
-    from homeassistant.components.binary_sensor import BinarySensorEntity
-except ImportError:
-    # Prior to Home Assistant 0.110
-    from homeassistant.components.binary_sensor import (
-        BinarySensorDevice as BinarySensorEntity,
-    )
-
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASS_OCCUPANCY,
+    BinarySensorEntity,
+)
 
 from .const import DOMAIN, UPDATE_RATE
 
