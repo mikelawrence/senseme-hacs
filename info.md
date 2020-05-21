@@ -11,10 +11,9 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 * Confirmed support of Haiku, Haiku H, and Haiku L fans.
 * Probably supports Haiku C fans. If you have a Haiku C fan you should be seeing a warning about an unknown model in the Home Assistant log. Please open an issue [here](https://github.com/mikelawrence/senseme-hacs/issues) to let me know the model name.
 * Configuration via Home Assistant frontend.
-* Fan supports speed, direction and whoosh as oscillate.
-* Light supported if installed.
-* Occupancy sensor supported.
-* Control of any one fan in a room (Haiku App configured) affects all fans in that room.
+* Fan supports speed, direction, whoosh as oscillate, light if installed and occupancy sensor if available.
+* Haiku Light supports brightness, color temp and occupancy sensor.
+* Control of any one device in a room (Haiku App configured) affects all devices in that room.
 
 ### Usage
 

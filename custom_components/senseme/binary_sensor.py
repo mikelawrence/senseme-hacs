@@ -12,28 +12,27 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    """Set up SenseME sensors."""
+    """Set up SenseME occupancy sensors."""
     if hass.data.get(DOMAIN) is None:
         hass.data[DOMAIN] = {}
     if hass.data[DOMAIN].get("sensor_devices") is None:
         hass.data[DOMAIN]["sensor_devices"] = []
 
-    async def async_discovered_fans(fans: list):
-        """Async handle a (re)discovered SenseME fans."""
+    async def async_discovered_devices(devices: list):
+        """Async handle a (re)discovered SenseME devices."""
         new_sensors = []
-        for fan in fans:
-            if fan not in hass.data[DOMAIN]["sensor_devices"]:
-                # L Series fans do not have an occupancy sensor
-                if fan.model != "Haiku L Fan":
-                    fan.refreshMinutes = UPDATE_RATE
-                    hass.data[DOMAIN]["sensor_devices"].append(fan)
-                    sensor = HASensemeOccupancySensor(fan)
+        for device in devices:
+            if device not in hass.data[DOMAIN]["sensor_devices"]:
+                if device.has_sensor:
+                    device.refreshMinutes = UPDATE_RATE
+                    hass.data[DOMAIN]["sensor_devices"].append(device)
+                    sensor = HASensemeOccupancySensor(device)
                     new_sensors.append(sensor)
                     _LOGGER.debug("Added new sensor: %s", sensor.name)
         if len(new_sensors) > 0:
             hass.add_job(async_add_entities, new_sensors)
 
-    hass.data[DOMAIN]["discovery"].add_callback(async_discovered_fans)
+    hass.data[DOMAIN]["discovery"].add_callback(async_discovered_devices)
 
 
 class HASensemeOccupancySensor(BinarySensorEntity):
