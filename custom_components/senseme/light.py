@@ -44,7 +44,10 @@ class HASensemeLight(LightEntity):
     def __init__(self, device):
         """Initialize the entity."""
         self.device = device
-        self._name = device.name + " Light"
+        if device.is_light:
+            self._name = device.name
+        else:
+            self._name = device.name + " Light"
         self._supported_features = SUPPORT_BRIGHTNESS
         if device.is_light:
             self._supported_features |= SUPPORT_COLOR_TEMP
