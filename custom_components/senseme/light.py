@@ -115,7 +115,7 @@ class HASensemeLight(LightEntity):
     @property
     def color_temp(self):
         """Return the color temp value in mireds."""
-        if self.device.is_light:
+        if not self.device.is_light:
             return None
         color_temp = int(round(1000000.0 / float(self.device.light_color_temp)))
         return color_temp
@@ -123,7 +123,7 @@ class HASensemeLight(LightEntity):
     @property
     def min_mireds(self):
         """Return the coldest color temp that this light supports."""
-        if self.device.is_light:
+        if not self.device.is_light:
             return None
         color_temp = int(round(1000000.0 / float(self.device.light_color_temp_max)))
         return color_temp
@@ -131,7 +131,7 @@ class HASensemeLight(LightEntity):
     @property
     def max_mireds(self):
         """Return the warmest color temp that this light supports."""
-        if self.device.is_light:
+        if not self.device.is_light:
             return None
         color_temp = int(round(1000000.0 / float(self.device.light_color_temp_min)))
         return color_temp
