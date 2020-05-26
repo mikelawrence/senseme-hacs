@@ -33,23 +33,25 @@ async def async_setup_entry(hass, entry, async_add_entities):
     if hass.data[DOMAIN].get("fan_devices") is None:
         hass.data[DOMAIN]["fan_devices"] = []
 
-    async def async_discovered_fans(fans: list):
-        """Async handle (re)discovered SenseME fans."""
+    async def async_discovered_devices(devices: list):
+        """Async handle (re)discovered SenseME devices."""
         new_fans = []
-        for fan in fans:
-            if fan not in hass.data[DOMAIN]["fan_devices"]:
-                fan.refreshMinutes = UPDATE_RATE
-                hass.data[DOMAIN]["fan_devices"].append(fan)
-                new_fans.append(HASensemeFan(hass, entry, fan))
-                _LOGGER.debug("Added new fan: %s", fan.name)
-                if "Haiku" not in fan.model and "Fan" not in fan.model:
+        for device in devices:
+            if device not in hass.data[DOMAIN]["fan_devices"]:
+                if device.is_fan:
+                    device.refreshMinutes = UPDATE_RATE
+                    hass.data[DOMAIN]["fan_devices"].append(device)
+                    new_fans.append(HASensemeFan(hass, entry, device))
+                    _LOGGER.debug("Added new fan: %s", device.name)
+                if device.is_unknown_model:
                     _LOGGER.warning(
-                        "Discovered unknown SenseME device model='%s'", fan.model
+                        "Discovered unknown SenseME device model='%s' assuming it is a fan",
+                        device.model,
                     )
         if len(new_fans) > 0:
             hass.add_job(async_add_entities, new_fans)
 
-    hass.data[DOMAIN]["discovery"].add_callback(async_discovered_fans)
+    hass.data[DOMAIN]["discovery"].add_callback(async_discovered_devices)
 
 
 class HASensemeFan(FanEntity):

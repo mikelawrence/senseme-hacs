@@ -18,7 +18,7 @@ If you have HACS installed on Home Assistant then just search integrations for *
 
 Copy the custom_components folder of this repository to your config folder and restart Home Assistant.
 
-## Configuration using Home Assistant frontend
+## Configuration using Home Assistant UI
 
 * Go to **Configuration -> Integrations**.
 * Click on the **+** in the bottom right corner to add a new integration.

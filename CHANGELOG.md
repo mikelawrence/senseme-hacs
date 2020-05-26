@@ -1,5 +1,9 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.1.0 - Support standalone Haiku Light
+
+* Haiku Light supports brightness, color temp and occupancy sensor. Kudos to [PenitentTangent2401](https://github.com/mikelawrence/senseme-hacs/issues/7) for his assistance in testing and debugging these changes.
+
 ## 2.0.10 - Fix problems caused by 2.0.9
 
 * Removed changes in 2.0.9 that caused problems for some users. No changes to integration functionality.
