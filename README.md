@@ -7,6 +7,7 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 Now [aiosenseme](https://pypi.org/project/aiosenseme/) is used as the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while.
 
 * Requires Home Assistant 0.110.0 or greater
+* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
 
 ## Installation
 
@@ -45,8 +46,7 @@ From v2.0.0 on this integration is configured via the Home Assistant frontend on
 
 ## Issues
 
-* Early testing indicates the i6 fan from Big Ass Fans is NOT compatible with this integration.
-* This integration does NOT currently support the discontinued Wireless Wall Control.
+* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
 * Unknown models will produce a warning 'Discovered unknown SenseME device model' in Home Assistant. If you get this warning post an issue on [GitHub](https://github.com/mikelawrence/senseme-hacs/issues) with the model detected and I'll add that model to stop the warning.
 * Sometimes SenseME fans just don't respond to discovery packets. It happens enough for me to mention it here. You will have to keep trying to add the SenseME integration until at least one fan is detected. From there all fans will be eventually detected by the periodic discovery built-in to the integration. If your fans are grayed out when you restart Home Assistant it just means the initial discovery didn't detect them but again the periodic discovery will eventually detect them.
 * SenseME fans will occasionally drop the connection to Home Assistant. The integration will detect this and automatically reconnect. If it was the fan that dropped the connection this integration will usually reconnect within a minute. I'm not sure why but if the fan is powered off it can take a long time to detect the lost connection and that time varies based on what platform Home Assistant Core is running. On my development platform (Windows Subsystem for Linux running Ubuntu) a powered off fan is detected in a couple of minutes. Home Assistant running on a Raspberry Pi takes upwards of 25 minutes to detect lost connections.
