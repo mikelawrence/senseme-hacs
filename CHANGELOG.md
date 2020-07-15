@@ -1,5 +1,7 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.1.2 - Fix missing occupancy sensor for Standalone Haiku Light
+
 ## 2.1.1 - Support occupancy sensor in Haiku L fans with Wireless Wall Controller
 
 * Haiku L Fans will report occupancy status if connected to a Wireless Wall Controller. This version attempts to detect a occupancy sensor in Haiku L Fans but it may not work correctly. So for those who have a Haiku L Fan and no Wireless Wall Sensor please check that NO occupancy sensor appears in Home Assistant and please create a new issue on [GitHub](https://github.com/mikelawrence/senseme-hacs/issues) to tell me it's working or not.
