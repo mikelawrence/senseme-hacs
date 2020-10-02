@@ -1,5 +1,9 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.1.3 - Add Norwegian translation. Thanks [hwikene](https://github.com/hwikene).
+
+* Support aiosenseme 4.4 [aiosenseme v0.4.4](https://pypi.org/project/aiosenseme/0.4.4/). No functional changes for this integration.
+
 ## 2.1.2 - Fix missing occupancy sensor for Standalone Haiku Light
 
 ## 2.1.1 - Support occupancy sensor in Haiku L fans with Wireless Wall Controller
@@ -28,11 +32,11 @@
 ## 2.0.7 - Fix L-Series Fans and Wall Controller problems
 
 * Haiku L-Series fans no longer have an occupancy sensor.
-* Ignore Wireless Wall Controllers by using [aiosenseme v0.3.3](https://github.com/mikelawrence/aiosenseme/releases/tag/v0.3.3).
+* Ignore Wireless Wall Controllers by using [aiosenseme v0.3.3](https://pypi.org/project/aiosenseme/0.3.3/).
 
 ## 2.0.6 - Support aiosenseme update
 
-* Support changes in [aiosenseme v0.3.2](https://github.com/mikelawrence/aiosenseme/releases/tag/v0.3.2).
+* Support changes in [aiosenseme v0.3.2](https://pypi.org/project/aiosenseme/0.3.2/).
 
 ## 2.0.5 - Add configuration options
 
