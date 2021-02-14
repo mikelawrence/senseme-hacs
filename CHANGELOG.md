@@ -1,8 +1,17 @@
 # Changelog for Home Assistant integration for SenseME fans
 
-## 2.1.3 - Add Norwegian translation. Thanks [hwikene](https://github.com/hwikene).
+## 2.2.0 - Support new fan model in Home Assistant
 
-* Support aiosenseme 4.4 [aiosenseme v0.4.4](https://pypi.org/project/aiosenseme/0.4.4/). No functional changes for this integration.
+* Support the new fan model in Home Assistant 2021.3. Whoosh has changed to a preset mode and now Sleep is also available as a preset mode.
+* Senseme Device can now be added by IP address instead of requiring discovery first. Some users prefer to isolate their IOT devices on a separate network. Discovery uses UDP broadcast packets which by design do not traverse through routers. Now these users will be able to still control their Haiku devices.
+* There are substantial changes to the integration's config flow. Previously, devices were discovered and all were added to Home Assistant. Now discovered devices are suggestions to what the user may want to add to Home Assistant. Here you can type in an IP address for a device that cannot be discovered. You add each device separately.
+* Once devices are added to Home Assistant they are remembered between restarts and discovery is not required to reconnect. Sometimes discovery doesn't work and so a reboot could cause a device to disappear from Home Assistant until rediscovered.
+* Support [aiosenseme v0.5.0](https://pypi.org/project/aiosenseme/0.5.0/).
+* Translations have been lost in this release.
+
+## 2.1.3 - Add Norwegian translation. Thanks [hwikene](https://github.com/hwikene)!
+
+* Support [aiosenseme v0.4.4](https://pypi.org/project/aiosenseme/0.4.4/). No functional changes for this integration.
 
 ## 2.1.2 - Fix missing occupancy sensor for Standalone Haiku Light
 

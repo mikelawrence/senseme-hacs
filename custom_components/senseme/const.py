@@ -15,3 +15,17 @@ CONF_ENABLE_WHOOSH = "enable_whoosh"
 CONF_ENABLE_WHOOSH_DEFAULT = True
 CONF_ENABLE_DIRECTION = "enable_direction"
 CONF_ENABLE_DIRECTION_DEFAULT = True
+
+# flow
+CONF_DEVICE_INPUT = "device_input"
+
+# data storage
+CONF_INFO = "info"
+CONF_FAN = "fan"
+CONF_LIGHT = "light"
+CONF_BINARY_SENSOR = "binary_sensor"
+
+# Fan Preset Modes
+PRESET_MODE_WHOOSH = "Whoosh"
+PRESET_MODE_SLEEP = "Sleep"
+PRESET_MODE_NORMAL = "Normal"

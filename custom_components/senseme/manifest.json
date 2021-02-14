@@ -1,16 +1,17 @@
 {
   "domain": "senseme",
   "name": "SenseME",
-  "config_flow": true,
+  "version": "2.1.4",
   "documentation": "https://www.github.com/mikelawrence/senseme-hacs",
-  "requirements": [
-    "aiosenseme>=0.4.4,<0.5.0"
-  ],
-  "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
   "dependencies": [],
   "codeowners": [
     "@mikelawrence"
-  ]
+  ],
+  "config_flow": true,
+  "requirements": [
+    "aiosenseme>=0.5.0,<0.6.0"
+  ],
+  "zeroconf": [],
+  "ssdp": [],
+  "homekit": {}
 }
