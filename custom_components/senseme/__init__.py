@@ -21,6 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the SenseME component."""
+    hass.data[DOMAIN] = {}
     if config.get(DOMAIN) is not None:
         _LOGGER.error(
             "Configuration of senseme integration via yaml is depreciated,"
@@ -69,3 +70,52 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_config_entry_updated(hass, entry) -> None:
     """Handle signals of config entry being updated."""
     async_dispatcher_send(hass, EVENT_SENSEME_CONFIG_UPDATE)
+
+
+class SensemeEntity:
+    """Base class for senseme entities."""
+
+    def __init__(self, device, name):
+        """Initialize the entity."""
+        self.device = device
+        self._name = name
+
+    @property
+    def device_info(self):
+        """Get device info for Home Assistant."""
+        info = {
+            "connections": {("mac", self.device.id)},
+            "identifiers": {(DOMAIN, self.device.network_token)},
+            "name": self.device.name,
+            "manufacturer": "Big Ass Fans",
+            "model": self.device.model,
+        }
+        if self.device.fw_version:
+            info["sw_version"] = self.device.fw_version
+        if self.device.room_status:
+            info["suggested_area"] = self.device.room_name
+
+        return info
+
+    @property
+    def device_state_attributes(self) -> dict:
+        """Get the current device state attributes."""
+        attributes = {}
+        if self.device.room_status:
+            attributes["room"] = self.device.room_name
+        return attributes
+
+    @property
+    def available(self) -> bool:
+        """Return True if available/operational."""
+        return self.device.connected
+
+    @property
+    def should_poll(self) -> bool:
+        """State is pushed."""
+        return False
+
+    @property
+    def name(self):
+        """Get name."""
+        return self._name

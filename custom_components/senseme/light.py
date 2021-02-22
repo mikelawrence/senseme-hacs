@@ -9,6 +9,7 @@ from homeassistant.components.light import (
     LightEntity,
 )
 
+from . import SensemeEntity
 from .const import DOMAIN, UPDATE_RATE
 
 _LOGGER = logging.getLogger(__name__)
@@ -16,8 +17,6 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME lights."""
-    if not hass.data.get(DOMAIN):
-        hass.data[DOMAIN] = {}
     if not hass.data[DOMAIN].get("light_devices"):
         hass.data[DOMAIN]["light_devices"] = []
 
@@ -38,16 +37,16 @@ async def async_setup_entry(hass, entry, async_add_entities):
     hass.data[DOMAIN]["discovery"].add_callback(async_discovered_devices)
 
 
-class HASensemeLight(LightEntity):
+class HASensemeLight(SensemeEntity, LightEntity):
     """Representation of a Big Ass Fans SenseME light."""
 
     def __init__(self, device):
         """Initialize the entity."""
-        self.device = device
         if device.is_light:
-            self._name = device.name
+            name = device.name
         else:
-            self._name = device.name + " Light"
+            name = f"{device.name} Light"
+        super().__init__(device, name)
         self._supported_features = SUPPORT_BRIGHTNESS
         if device.is_light:
             self._supported_features |= SUPPORT_COLOR_TEMP
@@ -57,47 +56,9 @@ class HASensemeLight(LightEntity):
         self.device.add_callback(self.async_write_ha_state)
 
     @property
-    def name(self):
-        """Get light name."""
-        return self._name
-
-    @property
-    def device_info(self):
-        """Get device info for Home Assistant."""
-        info = {
-            "connections": {("mac", self.device.id)},
-            "identifiers": {("token", self.device.network_token)},
-            "name": self.device.name,
-            "manufacturer": "Big Ass Fans",
-            "model": self.device.model,
-        }
-        if self.device.fw_version:
-            info["sw_version"] = self.device.fw_version
-        return info
-
-    @property
     def unique_id(self):
         """Return a unique identifier for this light."""
-        uid = f"{self.device.id}-LIGHT"
-        return uid
-
-    @property
-    def should_poll(self) -> bool:
-        """Light state is pushed."""
-        return False
-
-    @property
-    def device_state_attributes(self) -> dict:
-        """Get the current device state attributes."""
-        attributes = {}
-        if self.device.room_status:
-            attributes["room"] = self.device.room_name
-        return attributes
-
-    @property
-    def available(self) -> bool:
-        """Return True if available/operational."""
-        return self.device.connected
+        return f"{self.device.id}-LIGHT"
 
     @property
     def is_on(self) -> bool:
@@ -141,7 +102,7 @@ class HASensemeLight(LightEntity):
         """Flag supported features."""
         return self._supported_features
 
-    def turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs) -> None:
         """Turn on the light."""
         brightness = kwargs.get(ATTR_BRIGHTNESS)
         color_temp = kwargs.get(ATTR_COLOR_TEMP)
@@ -156,6 +117,6 @@ class HASensemeLight(LightEntity):
                 brightness = 256  # this will end up as 16 which is max
             self.device.light_brightness = int(brightness / 16)
 
-    def turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn off the light."""
         self.device.light_on = False

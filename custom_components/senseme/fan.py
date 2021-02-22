@@ -13,6 +13,7 @@ from homeassistant.components.fan import (
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
+from . import SensemeEntity
 from .const import (
     CONF_ENABLE_DIRECTION,
     CONF_ENABLE_DIRECTION_DEFAULT,
@@ -41,7 +42,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 if device.is_fan:
                     device.refreshMinutes = UPDATE_RATE
                     hass.data[DOMAIN]["fan_devices"].append(device)
-                    new_fans.append(HASensemeFan(hass, entry, device))
+                    new_fans.append(HASensemeFan(entry, device))
                     _LOGGER.debug("Added new fan: %s", device.name)
                 if device.is_unknown_model:
                     _LOGGER.warning(
@@ -54,21 +55,13 @@ async def async_setup_entry(hass, entry, async_add_entities):
     hass.data[DOMAIN]["discovery"].add_callback(async_discovered_devices)
 
 
-class HASensemeFan(FanEntity):
+class HASensemeFan(SensemeEntity, FanEntity):
     """SenseME ceiling fan component."""
 
-    def __init__(self, hass, entry, device) -> None:
+    def __init__(self, entry, device) -> None:
         """Initialize the entity."""
-
-        @callback
-        def options_updated():
-            """Handle signals of config entry being updated."""
-            self.schedule_update_ha_state()
-
-        self.device = device
+        super().__init__(device, device.name)
         self._entry = entry
-        self._name = device.name
-        async_dispatcher_connect(hass, EVENT_SENSEME_CONFIG_UPDATE, options_updated)
 
     @property
     def _direction_enabled(self) -> bool:
@@ -92,53 +85,26 @@ class HASensemeFan(FanEntity):
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
+        self.async_on_remove(
+            async_dispatcher_connect(
+                self.hass, EVENT_SENSEME_CONFIG_UPDATE, self.async_write_ha_state
+            )
+        )
         self.device.add_callback(self.async_write_ha_state)
-
-    @property
-    def name(self) -> str:
-        """Get fan name."""
-        return self._name
-
-    @property
-    def device_info(self):
-        """Get device info for Home Assistant."""
-        info = {
-            "connections": {("mac", self.device.id)},
-            "identifiers": {("token", self.device.network_token)},
-            "name": self.device.name,
-            "manufacturer": "Big Ass Fans",
-            "model": self.device.model,
-        }
-        if self.device.fw_version:
-            info["sw_version"] = self.device.fw_version
-        return info
 
     @property
     def unique_id(self):
         """Return a unique identifier for this fan."""
-        uid = f"{self.device.id}-FAN"
-        return uid
-
-    @property
-    def should_poll(self) -> bool:
-        """Fan state is pushed."""
-        return False
+        return f"{self.device.id}-FAN"
 
     @property
     def device_state_attributes(self) -> dict:
         """Get the current device state attributes."""
-        attributes = {
+        return {
             "autocomfort": self.device.fan_autocomfort,
             "smartmode": self.device.fan_smartmode,
+            **super().device_state_attributes,
         }
-        if self.device.room_status:
-            attributes["room"] = self.device.room_name
-        return attributes
-
-    @property
-    def available(self) -> bool:
-        """Return True if available/operational."""
-        return self.device.connected
 
     @property
     def is_on(self) -> bool:
@@ -188,35 +154,35 @@ class HASensemeFan(FanEntity):
             supported_features |= SUPPORT_DIRECTION
         return supported_features
 
-    def turn_on(self, speed: str = None, **kwargs) -> None:
+    async def async_turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn the fan on with speed control."""
         if speed is None:
             # no speed, just turn the fan on
             self.device.fan_on = True
+            return
+        # set the speed, which will also turn on/off fan
+        if speed == "off":
+            self.device.fan_speed = 0
         else:
-            # set the speed, which will also turn on/off fan
-            if speed == "off":
-                self.device.fan_speed = 0
-            else:
-                self.device.fan_speed = int(speed)
+            self.device.fan_speed = int(speed)
 
-    def turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
         self.device.fan_on = False
 
-    def set_speed(self, speed: str) -> None:
+    async def async_set_speed(self, speed: str) -> None:
         """Set the speed of the fan."""
         if speed == "off":
             self.device.fan_speed = 0
         else:
             self.device.fan_speed = int(speed)
 
-    def oscillate(self, oscillating: bool) -> None:
+    async def async_oscillate(self, oscillating: bool) -> None:
         """Set oscillation (Whoosh on SenseME fan)."""
         if self._whoosh_enabled:
             self.device.fan_whoosh = oscillating
 
-    def set_direction(self, direction: str) -> None:
+    async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
         if self._direction_enabled:
             if direction == DIRECTION_FORWARD:

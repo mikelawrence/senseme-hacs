@@ -1,14 +1,13 @@
 """Config flow for SenseME."""
 import logging
 
-import voluptuous as vol
-
 import aiosenseme
+import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 
-from .const import (  # pylint: disable=unused-import
-    CONF_ENABLE_DIRECTION,
+from .const import (
+    CONF_ENABLE_DIRECTION,  # pylint: disable=unused-import
     CONF_ENABLE_DIRECTION_DEFAULT,
     CONF_ENABLE_WHOOSH,
     CONF_ENABLE_WHOOSH_DEFAULT,
