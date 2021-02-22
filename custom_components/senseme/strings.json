@@ -14,21 +14,6 @@
         "error": {
             "no_devices_found": "[%key:common::config_flow::abort::no_devices_found%]",
             "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
-        },      
-        "abort": {
-            "single_instance_allowed": "Only a single configuration of SenseME is possible.",
-            "no_devices_found": "No SenseME devices found on the network."
-        }
-    },
-    "options": {
-        "step": {
-            "init": {
-                "title": "SenseME settings",
-                "data": {
-                    "enable_direction": "Enable Direction",
-                    "enable_whoosh": "Enable Whoosh as Oscillate"
-                }
-            }
         }
     }
 }

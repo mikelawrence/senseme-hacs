@@ -47,19 +47,17 @@ class HASensemeLight(LightEntity):
         """Get light name."""
         return self._name
 
-    # @property
-    # def device_info(self):
-    #     """Get device info for Home Assistant."""
-    #     info = {
-    #         "connections": {("mac", self._device.mac)},
-    #         "identifiers": {("uuid", self._device.uuid)},
-    #         "name": self._device.name,
-    #         "manufacturer": "Big Ass Fans",
-    #         "model": self._device.model,
-    #     }
-    #     if self._device.fw_version:
-    #         info["sw_version"] = self._device.fw_version
-    #     return info
+    @property
+    def device_info(self):
+        """Get device info for Home Assistant."""
+        return {
+            "connections": {("mac", self._device.mac)},
+            "identifiers": {("uuid", self._device.uuid)},
+            "name": self._device.name,
+            "manufacturer": "Big Ass Fans",
+            "model": self._device.model,
+            "sw_version": self._device.fw_version,
+        }
 
     @property
     def unique_id(self):
@@ -75,15 +73,17 @@ class HASensemeLight(LightEntity):
     @property
     def device_state_attributes(self) -> dict:
         """Get the current device state attributes."""
-        attributes = {}
-        if self._device.room_status:
-            attributes["room"] = self._device.room_name
-        return attributes
+        return {
+            "room_name": self._device.room_name,
+            "room_type": self._device.room_type,
+            "sleep_mode": "On" if self._device.sleep_mode else "Off",
+            "motion_control": "On" if self._device.motion_light_auto else "Off",
+        }
 
     @property
     def available(self) -> bool:
         """Return True if available/operational."""
-        return self._device.connected
+        return self._device.available
 
     @property
     def is_on(self) -> bool:

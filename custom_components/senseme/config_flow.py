@@ -1,5 +1,5 @@
 """Config flow for SenseME."""
-# import asyncio
+import ipaddress
 import logging
 
 import voluptuous as vol
@@ -25,12 +25,6 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_PUSH
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        """Get the options flow for this handler."""
-        return SensemeOptionsFlowHandler(config_entry)
 
     def _devices_str(self):
         """Return a human readable form of all discovered devices."""
@@ -72,8 +66,12 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     selected_device = device
                     break
             if selected_device is None:
-                # try name as IP address
-                selected_device = await async_get_device_by_ip_address(device_name)
+                try:
+                    # do some checking on IP address
+                    ipaddress.ip_address(device_name)
+                    selected_device = await async_get_device_by_ip_address(device_name)
+                except ValueError:
+                    pass
             if selected_device is None:
                 errors["base"] = "no_devices_found"
             elif selected_device.uuid in self._async_current_ids():
@@ -82,7 +80,7 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(selected_device.uuid)
                 return self.async_create_entry(
                     title=selected_device.name,
-                    data={CONF_INFO: selected_device.get_device_info()},
+                    data={CONF_INFO: selected_device.get_device_info},
                 )
         return self.async_show_form(
             step_id="user",
@@ -91,37 +89,4 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
             description_placeholders={"devices": device_list},
-        )
-
-
-class SensemeOptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle an option flow for SenseME."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry):
-        """Initialize options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(self, user_input=None):
-        """Handle options flow."""
-        if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_ENABLE_DIRECTION,
-                        default=self.config_entry.options.get(
-                            CONF_ENABLE_DIRECTION, CONF_ENABLE_DIRECTION_DEFAULT
-                        ),
-                    ): bool,
-                    vol.Required(
-                        CONF_ENABLE_WHOOSH,
-                        default=self.config_entry.options.get(
-                            CONF_ENABLE_WHOOSH, CONF_ENABLE_WHOOSH_DEFAULT
-                        ),
-                    ): bool,
-                }
-            ),
         )

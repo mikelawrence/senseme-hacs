@@ -1,15 +1,8 @@
 {
     "config": {
-        "abort": {
-            "no_devices_found": "No SenseME devices found on the network.",
-            "single_instance_allowed": "Only a single configuration of SenseME is possible."
-        },
         "error": {
             "already_configured": "Device is already configured",
-            "invalid_auth": "Invalid authentication",
-            "no_devices_found": "No devices found on the network",
-            "no_usable_service": "A device was found but could not identify any way to establish a connection to it. If you keep seeing this message, try specifying its IP address or restarting your Apple TV.",
-            "unknown": "Unexpected error"
+            "no_devices_found": "No devices found on the network"
         },
         "flow_title": "SenseME",
         "step": {
@@ -19,17 +12,6 @@
                 },
                 "description": "Start by entering the device name (e.g. Studio or Bedroom) or IP address of the Haiku Device you want to add. If any devices were automatically found on your network, they are shown below.\n\nIf you cannot see your device or experience any issues, try specifying the device IP address.\n\n{devices}",
                 "title": "Setup a new Big Ass Fans Haiku device with SenseME"
-            }
-        }
-    },
-    "options": {
-        "step": {
-            "init": {
-                "data": {
-                    "enable_direction": "Enable Direction",
-                    "enable_whoosh": "Enable Whoosh as Oscillate"
-                },
-                "title": "SenseME settings"
             }
         }
     },
