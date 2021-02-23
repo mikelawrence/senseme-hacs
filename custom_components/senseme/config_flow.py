@@ -2,17 +2,15 @@
 import ipaddress
 import logging
 
+
 import voluptuous as vol
 from aiosenseme import async_get_device_by_ip_address, discover_all
+
 from homeassistant import config_entries
 from homeassistant.core import callback
 
 from .const import (
     CONF_DEVICE_INPUT,
-    CONF_ENABLE_DIRECTION,
-    CONF_ENABLE_DIRECTION_DEFAULT,
-    CONF_ENABLE_WHOOSH,
-    CONF_ENABLE_WHOOSH_DEFAULT,
     CONF_INFO,
     DOMAIN,
 )

@@ -19,6 +19,7 @@ from homeassistant.util.percentage import (
     ranged_value_to_percentage,
 )
 
+from . import SensemeEntity
 from .const import (
     CONF_FAN,
     DOMAIN,
@@ -39,74 +40,32 @@ async def async_setup_entry(hass, entry, async_add_entities):
         hass.add_job(async_add_entities, [fan])
 
 
-async def async_unload_entry(hass, entry):
-    """Unload a config entry."""
-    bridge = hass.data[DOMAIN].pop(entry.data["host"])
-    return await bridge.async_reset()
-
-
-class HASensemeFan(FanEntity):
+class HASensemeFan(SensemeEntity, FanEntity):
     """SenseME ceiling fan component."""
 
     def __init__(self, entry, device) -> None:
         """Initialize the entity."""
-
-        async def options_updated():
-            """Handle signals of config entry being updated."""
-            print(f"Fan Options Updated {self._entry.options}")
-            self.schedule_update_ha_state()
-
-        self._device = device
+        super().__init__(device, device.name)
         self._entry = entry
-        self.unsub = entry.add_update_listener(options_updated)
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
-
-    @property
-    def name(self) -> str:
-        """Get fan name."""
-        return self._device.name
-
-    @property
-    def device_info(self):
-        """Get device info for Home Assistant."""
-        return {
-            "connections": {("mac", self._device.mac)},
-            "identifiers": {("uuid", self._device.uuid)},
-            "name": self._device.name,
-            "manufacturer": "Big Ass Fans",
-            "model": self._device.model,
-            "sw_version": self._device.fw_version,
-        }
+        self.device.add_callback(self.async_write_ha_state)
 
     @property
     def unique_id(self):
         """Return a unique identifier for this fan."""
-        uid = f"{self._device.uuid}-FAN"
-        return uid
-
-    @property
-    def should_poll(self) -> bool:
-        """Fan state is pushed."""
-        return False
+        return f"{self.device.uuid}-FAN"
 
     @property
     def device_state_attributes(self) -> dict:
         """Get the current device state attributes."""
         return {
-            "room_name": self._device.room_name,
-            "room_type": self._device.room_type,
             "auto_comfort": self._device.fan_autocomfort.capitalize(),
             "smartmode": self._device.fan_smartmode.capitalize(),
             "motion_control": "On" if self._device.motion_fan_auto else "Off",
+            **super().device_state_attributes,
         }
-
-    @property
-    def available(self) -> bool:
-        """Return True if available/operational."""
-        return self._device.available
 
     @property
     def is_on(self) -> bool:
@@ -148,13 +107,13 @@ class HASensemeFan(FanEntity):
         """Return a list of available preset modes."""
         return [PRESET_MODE_NONE, PRESET_MODE_WHOOSH, PRESET_MODE_SLEEP]
 
-    def set_percentage(self, percentage: int) -> None:
+    async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed of the fan, as a percentage."""
         self._device.fan_speed = math.ceil(
             percentage_to_ranged_value(self._device.fan_speed_limits, percentage)
         )
 
-    def turn_on(
+    async def async_turn_on(
         self,
         speed: Optional[str] = None,
         percentage: Optional[int] = None,
@@ -169,14 +128,13 @@ class HASensemeFan(FanEntity):
                 return
         if percentage is None:
             percentage = 25
-
         self.set_percentage(percentage)
 
-    def turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
         self._device.fan_on = False
 
-    def set_preset_mode(self, preset_mode: str) -> None:
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
         if preset_mode == PRESET_MODE_NONE:
             self._device.sleep_mode = False
@@ -190,7 +148,7 @@ class HASensemeFan(FanEntity):
             return
         raise ValueError(f"Invalid preset mode: {preset_mode}")
 
-    def set_direction(self, direction: str) -> None:
+    async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
         if direction == DIRECTION_FORWARD:
             self._device.fan_dir = "FWD"

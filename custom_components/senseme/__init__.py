@@ -26,21 +26,12 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the SenseME component."""
+    hass.data[DOMAIN] = {}
     if config.get(DOMAIN) is not None:
         _LOGGER.error(
-            "Configuration of senseme integration via yaml is depreciated, "
+            "Configuration of senseme integration via yaml is deprecated, "
             "instead use Home Assistant frontend to add this integration"
         )
-
-    hass.data.setdefault(DOMAIN, {})
-
-    # # Make sure SenseME Discovery is already running
-    # if hass.data.get(DOMAIN) is None:
-    #     # Discovery not already started
-    #     discovery = SensemeDiscovery(False, DISCOVERY_UPDATE_RATE)
-    #     discovery.start()
-    #     hass.data[DOMAIN]["discovery"] = discovery
-
     return True
 
 
@@ -86,3 +77,51 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN][entry.unique_id][CONF_DEVICE].stop()
         hass.data[DOMAIN][entry.unique_id] = None
     return True
+
+async def async_config_entry_updated(hass, entry) -> None:
+    """Handle signals of config entry being updated."""
+    async_dispatcher_send(hass, EVENT_SENSEME_CONFIG_UPDATE)
+
+
+class SensemeEntity:
+    """Base class for senseme entities."""
+
+    def __init__(self, device, name):
+        """Initialize the entity."""
+        self.device = device
+        self._name = name
+
+    @property
+    def device_info(self):
+        """Get device info for Home Assistant."""
+        return {
+            "connections": {("mac", self._device.mac)},
+            "identifiers": {("uuid", self._device.uuid)},
+            "name": self._device.name,
+            "manufacturer": "Big Ass Fans",
+            "model": self._device.model,
+            "sw_version": self._device.fw_version,
+        }
+
+    @property
+    def device_state_attributes(self) -> dict:
+        """Get the current device state attributes."""
+        return {
+            "room_name": self._device.room_name,
+            "room_type": self._device.room_type,
+        }
+
+    @property
+    def available(self) -> bool:
+        """Return True if available/operational."""
+        return self.device.connected
+
+    @property
+    def should_poll(self) -> bool:
+        """State is pushed."""
+        return False
+
+    @property
+    def name(self):
+        """Get name."""
+        return self._name
