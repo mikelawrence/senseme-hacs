@@ -1,30 +1,19 @@
 {
     "config": {
-        "abort": {
-            "no_devices_found": "No SenseME devices found on the network.",
-            "single_instance_allowed": "Only a single configuration of SenseME is possible."
+        "error": {
+            "already_configured": "Device is already configured",
+            "no_devices_found": "No devices found on the network"
         },
+        "flow_title": "SenseME",
         "step": {
-            "confirm": {
+            "user": {
                 "data": {
-                    "enable_direction": "Enable Direction",
-                    "enable_whoosh": "Enable Whoosh as Oscillate"
+                    "device_input": "Device"
                 },
-                "description": "Set up SenseME integration.",
-                "title": "SenseME"
-            }
-    },
-        "title": "SenseME"
-    },
-    "options": {
-        "step": {
-            "init": {
-                "data": {
-                    "enable_direction": "Enable Direction",
-                    "enable_whoosh": "Enable Whoosh as Oscillate"
-                },
-                "title": "SenseME settings"
+                "description": "Start by entering the device name (e.g. Studio or Bedroom) or IP address of the Haiku Device you want to add. If any devices were automatically found on your network, they are shown below.\n\nIf you cannot see your device or experience any issues, try specifying the device IP address.\n\n{devices}",
+                "title": "Setup a new Big Ass Fans Haiku device with SenseME"
             }
         }
-    }
+    },
+    "title": "SenseME"
 }
