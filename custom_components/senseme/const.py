@@ -15,11 +15,12 @@ CONF_DEVICE_INPUT = "device_input"
 
 # data storage
 CONF_INFO = "info"
-CONF_FAN = "fan"
-CONF_LIGHT = "light"
-CONF_BINARY_SENSOR = "binary_sensor"
 
 # Fan Preset Modes
 PRESET_MODE_NONE = "None"
 PRESET_MODE_WHOOSH = "Whoosh"
 PRESET_MODE_SLEEP = "Sleep"
+
+# Fan Directions
+SENSEME_DIRECTION_FORWARD = "FWD"
+SENSEME_DIRECTION_REVERSE = "REV"

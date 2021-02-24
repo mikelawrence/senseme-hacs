@@ -12,18 +12,16 @@ from homeassistant.components.light import (
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
-from .const import CONF_LIGHT, DOMAIN
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME lights."""
-    device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
+    device = hass.data[DOMAIN][entry.entry_id][CONF_DEVICE]
     if device.has_light:
-        light = HASensemeLight(device)
-        hass.data[DOMAIN][entry.unique_id][CONF_LIGHT] = light
-        hass.add_job(async_add_entities, [light])
+        async_add_entities([HASensemeLight(device)])
 
 
 class HASensemeLight(SensemeEntity, LightEntity):
@@ -40,10 +38,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
         self._supported_features = SUPPORT_BRIGHTNESS
         if device.is_light:
             self._supported_features |= SUPPORT_COLOR_TEMP
-
-    async def async_added_to_hass(self):
-        """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
 
     @property
     def device_state_attributes(self) -> dict:
