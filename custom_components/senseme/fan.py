@@ -19,21 +19,20 @@ from homeassistant.util.percentage import (
 
 from . import SensemeEntity
 from .const import (
-    CONF_FAN,
     DOMAIN,
     PRESET_MODE_NONE,
     PRESET_MODE_SLEEP,
     PRESET_MODE_WHOOSH,
+    SENSEME_DIRECTION_FORWARD,
+    SENSEME_DIRECTION_REVERSE,
 )
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME fans."""
-    device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
+    device = hass.data[DOMAIN][entry.entry_id][CONF_DEVICE]
     if device.is_fan:
-        fan = HASensemeFan(device)
-        hass.data[DOMAIN][entry.unique_id][CONF_FAN] = fan
-        hass.add_job(async_add_entities, [fan])
+        async_add_entities([HASensemeFan(device)])
 
 
 class HASensemeFan(SensemeEntity, FanEntity):
@@ -42,10 +41,6 @@ class HASensemeFan(SensemeEntity, FanEntity):
     def __init__(self, device: SensemeFan) -> None:
         """Initialize the entity."""
         super().__init__(device, device.name)
-
-    async def async_added_to_hass(self):
-        """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
 
     @property
     def unique_id(self):
@@ -71,7 +66,7 @@ class HASensemeFan(SensemeEntity, FanEntity):
     def current_direction(self) -> str:
         """Return the fan direction."""
         direction = self._device.fan_dir
-        if direction == "FWD":
+        if direction == SENSEME_DIRECTION_FORWARD:
             return DIRECTION_FORWARD
         return DIRECTION_REVERSE
 
@@ -80,6 +75,11 @@ class HASensemeFan(SensemeEntity, FanEntity):
         """Flag supported features."""
         supported_features = SUPPORT_SET_SPEED | SUPPORT_DIRECTION
         return supported_features
+
+    @property
+    def speed_count(self) -> int:
+        """Return the number of speeds."""
+        return self._device.fan_speed_limits[1]
 
     @property
     def percentage(self) -> str:
@@ -146,6 +146,6 @@ class HASensemeFan(SensemeEntity, FanEntity):
     async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
         if direction == DIRECTION_FORWARD:
-            self._device.fan_dir = "FWD"
+            self._device.fan_dir = SENSEME_DIRECTION_FORWARD
         else:
-            self._device.fan_dir = "REV"
+            self._device.fan_dir = SENSEME_DIRECTION_REVERSE

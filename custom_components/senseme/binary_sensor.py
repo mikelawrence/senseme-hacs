@@ -9,18 +9,16 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
-from .const import CONF_BINARY_SENSOR, DOMAIN
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME occupancy sensors."""
-    device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
+    device = hass.data[DOMAIN][entry.entry_id][CONF_DEVICE]
     if device.has_sensor:
-        binary_sensor = HASensemeOccupancySensor(device)
-        hass.data[DOMAIN][entry.unique_id][CONF_BINARY_SENSOR] = binary_sensor
-        hass.add_job(async_add_entities, [binary_sensor])
+        async_add_entities([HASensemeOccupancySensor(device)])
 
 
 class HASensemeOccupancySensor(SensemeEntity, BinarySensorEntity):
@@ -29,10 +27,6 @@ class HASensemeOccupancySensor(SensemeEntity, BinarySensorEntity):
     def __init__(self, device: SensemeDevice):
         """Initialize the entity."""
         super().__init__(device, f"{device.name} Occupancy")
-
-    async def async_added_to_hass(self):
-        """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
 
     @property
     def unique_id(self):
