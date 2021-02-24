@@ -39,10 +39,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
         if device.is_light:
             self._supported_features |= SUPPORT_COLOR_TEMP
 
-    async def async_added_to_hass(self):
-        """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
-
     @property
     def device_state_attributes(self) -> dict:
         """Get the current device state attributes."""

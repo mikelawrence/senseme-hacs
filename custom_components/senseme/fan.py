@@ -42,10 +42,6 @@ class HASensemeFan(SensemeEntity, FanEntity):
         """Initialize the entity."""
         super().__init__(device, device.name)
 
-    async def async_added_to_hass(self):
-        """Add data updated listener after this object has been initialized."""
-        self._device.add_callback(self.async_write_ha_state)
-
     @property
     def unique_id(self):
         """Return a unique identifier for this fan."""

@@ -122,3 +122,11 @@ class SensemeEntity:
     def name(self) -> str:
         """Get name."""
         return self._name
+
+    async def async_added_to_hass(self):
+        """Add data updated listener after this object has been initialized."""
+        self._device.add_callback(self.async_write_ha_state)
+
+    async def async_will_remove_from_hass(self):
+        """Remove data updated listener after this object has been initialized."""
+        self._device.remove_callback(self.async_write_ha_state)
