@@ -12,18 +12,16 @@ from homeassistant.components.light import (
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
-from .const import CONF_LIGHT, DOMAIN
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME lights."""
-    device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
+    device = hass.data[DOMAIN][entry.entry_id][CONF_DEVICE]
     if device.has_light:
-        light = HASensemeLight(device)
-        hass.data[DOMAIN][entry.unique_id][CONF_LIGHT] = light
-        hass.add_job(async_add_entities, [light])
+        async_add_entities([HASensemeLight(device)])
 
 
 class HASensemeLight(SensemeEntity, LightEntity):

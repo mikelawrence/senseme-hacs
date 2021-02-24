@@ -9,18 +9,16 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
-from .const import CONF_BINARY_SENSOR, DOMAIN
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME occupancy sensors."""
-    device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
+    device = hass.data[DOMAIN][entry.entry_id][CONF_DEVICE]
     if device.has_sensor:
-        binary_sensor = HASensemeOccupancySensor(device)
-        hass.data[DOMAIN][entry.unique_id][CONF_BINARY_SENSOR] = binary_sensor
-        hass.add_job(async_add_entities, [binary_sensor])
+        async_add_entities([HASensemeOccupancySensor(device)])
 
 
 class HASensemeOccupancySensor(SensemeEntity, BinarySensorEntity):

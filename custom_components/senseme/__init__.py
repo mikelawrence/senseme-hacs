@@ -11,7 +11,7 @@ from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICE
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.dispatcher import async_dispatcher_send
+from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import CONF_INFO, DOMAIN, UPDATE_RATE
 
@@ -34,37 +34,49 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up SenseME from a config entry."""
+    hass.data[DOMAIN][entry.entry_id] = {}
 
-    async def _setup_platforms():
-        """Set up platforms and initiate connection."""
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_setup(entry, component)
-                for component in PLATFORMS
-            ]
-        )
-
-    hass.data[DOMAIN][entry.unique_id] = {}
     status, device = await async_get_device_by_device_info(
         info=entry.data[CONF_INFO], start_first=True, refresh_minutes=UPDATE_RATE
     )
+
     if not status:
         _LOGGER.warning(
             "%s: Connect to address %s failed",
             device.name,
             device.address,
         )
+        raise ConfigEntryNotReady
+
     await device.async_update(not status)
-    hass.data[DOMAIN][entry.unique_id][CONF_DEVICE] = device
-    hass.async_create_task(_setup_platforms())
+
+    hass.data[DOMAIN][entry.entry_id][CONF_DEVICE] = device
+
+    for component in PLATFORMS:
+        hass.async_create_task(
+            hass.config_entries.async_forward_entry_setup(entry, component)
+        )
+
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    hass.data[DOMAIN][entry.unique_id][CONF_DEVICE].stop()
-    hass.data[DOMAIN][entry.unique_id] = None
-    return True
+    hass.data[DOMAIN][entry.entry_id][CONF_DEVICE].stop()
+
+    unload_ok = all(
+        await asyncio.gather(
+            *[
+                hass.config_entries.async_forward_entry_unload(entry, component)
+                for component in PLATFORMS
+            ]
+        )
+    )
+
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    return unload_ok
 
 
 class SensemeEntity:
@@ -85,6 +97,7 @@ class SensemeEntity:
             "manufacturer": "Big Ass Fans",
             "model": self._device.model,
             "sw_version": self._device.fw_version,
+            "suggested_area": self._device.room_name,
         }
 
     @property
