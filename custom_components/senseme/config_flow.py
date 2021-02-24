@@ -2,18 +2,11 @@
 import ipaddress
 import logging
 
-
 import voluptuous as vol
 from aiosenseme import async_get_device_by_ip_address, discover_all
-
 from homeassistant import config_entries
-from homeassistant.core import callback
 
-from .const import (
-    CONF_DEVICE_INPUT,
-    CONF_INFO,
-    DOMAIN,
-)
+from .const import CONF_DEVICE_INPUT, CONF_INFO, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,13 +62,17 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ipaddress.ip_address(device_name)
                     selected_device = await async_get_device_by_ip_address(device_name)
                 except ValueError:
+                    _LOGGER.debug("Config flow invalid IP address %s", user_input)
                     pass
             if selected_device is None:
+                _LOGGER.debug("Config flow unable to connect to %s", user_input)
                 errors["base"] = "no_devices_found"
             elif selected_device.uuid in self._async_current_ids():
+                _LOGGER.debug("Config flow entity already configured %s", user_input)
                 errors["base"] = "already_configured"
             else:
                 await self.async_set_unique_id(selected_device.uuid)
+                _LOGGER.debug("Config flow adding new entity %s", user_input)
                 return self.async_create_entry(
                     title=selected_device.name,
                     data={CONF_INFO: selected_device.get_device_info},

@@ -13,11 +13,7 @@ from homeassistant.const import CONF_DEVICE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-from .const import (
-    CONF_INFO,
-    DOMAIN,
-    UPDATE_RATE,
-)
+from .const import CONF_INFO, DOMAIN, UPDATE_RATE
 
 PLATFORMS = [FAN_DOMAIN, LIGHT_DOMAIN, BINARYSENSOR_DOMAIN]
 
@@ -26,6 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the SenseME component."""
+    _LOGGER.debug("Using aiosenseme library version %s", aiosenseme_version)
     hass.data[DOMAIN] = {}
     if config.get(DOMAIN) is not None:
         _LOGGER.error(
@@ -65,34 +62,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
-            ]
-        )
-    )
-    if unload_ok:
-        hass.data[DOMAIN][entry.unique_id][CONF_DEVICE].stop()
-        hass.data[DOMAIN][entry.unique_id] = None
+    hass.data[DOMAIN][entry.unique_id][CONF_DEVICE].stop()
+    hass.data[DOMAIN][entry.unique_id] = None
     return True
-
-async def async_config_entry_updated(hass, entry) -> None:
-    """Handle signals of config entry being updated."""
-    async_dispatcher_send(hass, EVENT_SENSEME_CONFIG_UPDATE)
 
 
 class SensemeEntity:
     """Base class for senseme entities."""
 
-    def __init__(self, device, name):
+    def __init__(self, device: SensemeDevice, name: str):
         """Initialize the entity."""
-        self.device = device
+        self._device = device
         self._name = name
 
     @property
-    def device_info(self):
+    def device_info(self) -> dict:
         """Get device info for Home Assistant."""
         return {
             "connections": {("mac", self._device.mac)},
@@ -114,7 +98,7 @@ class SensemeEntity:
     @property
     def available(self) -> bool:
         """Return True if available/operational."""
-        return self.device.connected
+        return self._device.available
 
     @property
     def should_poll(self) -> bool:
@@ -122,6 +106,6 @@ class SensemeEntity:
         return False
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Get name."""
         return self._name

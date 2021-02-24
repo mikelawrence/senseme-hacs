@@ -3,17 +3,15 @@ import logging
 import math
 from typing import Any, List, Optional
 
+from aiosenseme import SensemeFan
 from homeassistant.components.fan import (
     DIRECTION_FORWARD,
     DIRECTION_REVERSE,
-    SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_SET_SPEED,
     FanEntity,
 )
 from homeassistant.const import CONF_DEVICE
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util.percentage import (
     percentage_to_ranged_value,
     ranged_value_to_percentage,
@@ -28,14 +26,12 @@ from .const import (
     PRESET_MODE_WHOOSH,
 )
 
-_LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up SenseME fans."""
     device = hass.data[DOMAIN][entry.unique_id][CONF_DEVICE]
     if device.is_fan:
-        fan = HASensemeFan(entry, device)
+        fan = HASensemeFan(device)
         hass.data[DOMAIN][entry.unique_id][CONF_FAN] = fan
         hass.add_job(async_add_entities, [fan])
 
@@ -43,19 +39,18 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class HASensemeFan(SensemeEntity, FanEntity):
     """SenseME ceiling fan component."""
 
-    def __init__(self, entry, device) -> None:
+    def __init__(self, device: SensemeFan) -> None:
         """Initialize the entity."""
         super().__init__(device, device.name)
-        self._entry = entry
 
     async def async_added_to_hass(self):
         """Add data updated listener after this object has been initialized."""
-        self.device.add_callback(self.async_write_ha_state)
+        self._device.add_callback(self.async_write_ha_state)
 
     @property
     def unique_id(self):
         """Return a unique identifier for this fan."""
-        return f"{self.device.uuid}-FAN"
+        return f"{self._device.uuid}-FAN"
 
     @property
     def device_state_attributes(self) -> dict:

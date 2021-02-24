@@ -1,6 +1,7 @@
 """Support for Big Ass Fans SenseME light."""
 import logging
 
+from aiosenseme import SensemeDevice
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP,
@@ -24,10 +25,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
         hass.data[DOMAIN][entry.unique_id][CONF_LIGHT] = light
         hass.add_job(async_add_entities, [light])
 
+
 class HASensemeLight(SensemeEntity, LightEntity):
     """Representation of a Big Ass Fans SenseME light."""
 
-    def __init__(self, device):
+    def __init__(self, device: SensemeDevice):
         """Initialize the entity."""
         self._device = device
         if device.is_light:
@@ -51,11 +53,11 @@ class HASensemeLight(SensemeEntity, LightEntity):
             "motion_control": "On" if self._device.motion_light_auto else "Off",
             **super().device_state_attributes,
         }
-    
+
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Return a unique identifier for this light."""
-        return f"{self.device.uuid}-LIGHT"
+        return f"{self._device.uuid}-LIGHT"
 
     @property
     def is_on(self) -> bool:
@@ -71,7 +73,7 @@ class HASensemeLight(SensemeEntity, LightEntity):
         return int(light_brightness)
 
     @property
-    def color_temp(self):
+    def color_temp(self) -> int:
         """Return the color temp value in mireds."""
         if not self._device.is_light:
             return None
