@@ -1,5 +1,6 @@
 """Support for Big Ass Fans SenseME light."""
 import logging
+from typing import Any
 
 from aiosenseme import SensemeDevice
 from homeassistant.components.light import (
@@ -95,7 +96,7 @@ class HASensemeLight(SensemeEntity, LightEntity):
         """Flag supported features."""
         return self._supported_features
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the light."""
         brightness = kwargs.get(ATTR_BRIGHTNESS)
         color_temp = kwargs.get(ATTR_COLOR_TEMP)
@@ -110,6 +111,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
                 brightness = 256  # this will end up as 16 which is max
             self._device.light_brightness = int(brightness / 16)
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off the light."""
         self._device.light_on = False

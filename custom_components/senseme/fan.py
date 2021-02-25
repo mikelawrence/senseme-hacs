@@ -1,5 +1,4 @@
 """Support for Big Ass Fans SenseME fan."""
-import logging
 import math
 from typing import Any, List, Optional
 
@@ -125,7 +124,7 @@ class HASensemeFan(SensemeEntity, FanEntity):
             percentage = 25
         await self.async_set_percentage(percentage)
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the fan off."""
         self._device.fan_on = False
 

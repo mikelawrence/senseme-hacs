@@ -35,7 +35,7 @@ class HASensemeOccupancySensor(SensemeEntity, BinarySensorEntity):
 
     @property
     def is_on(self) -> bool:
-        """Return true if sensor is occupied."""
+        """Return True if sensor is occupied."""
         return self._device.motion_detected
 
     @property

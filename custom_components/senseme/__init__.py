@@ -41,6 +41,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     )
 
     if not status:
+        # even if the device could not connect it will keep trying because start_first=True
+        device.stop()
         _LOGGER.warning(
             "%s: Connect to address %s failed",
             device.name,
