@@ -117,13 +117,13 @@ class HASensemeFan(SensemeEntity, FanEntity):
     ) -> None:
         """Turn the fan on with speed control."""
         if preset_mode is not None:
-            self.set_preset_mode(preset_mode)
+            await self.async_set_preset_mode(preset_mode)
             if preset_mode == PRESET_MODE_WHOOSH:
                 self._device.sleep_mode = True
                 return
         if percentage is None:
             percentage = 25
-        self.set_percentage(percentage)
+        await self.async_set_percentage(percentage)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the fan off."""
