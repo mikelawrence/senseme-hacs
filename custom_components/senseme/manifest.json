@@ -1,15 +1,15 @@
 {
+  "domain": "senseme",
+  "name": "SenseME",
+  "version": "2.2.0",
+  "config_flow": true,
+  "documentation": "https://www.github.com/mikelawrence/senseme-hacs",
+  "issue_tracker": "https://github.com/mikelawrence/senseme-hacs/issues",
+  "dependencies": [],
   "codeowners": [
     "@mikelawrence"
   ],
-  "config_flow": true,
-  "dependencies": [],
-  "documentation": "https://www.github.com/mikelawrence/senseme-hacs",
-  "domain": "senseme",
-  "issue_tracker": "https://github.com/mikelawrence/senseme-hacs/issues",
-  "name": "SenseME",
   "requirements": [
     "aiosenseme>=0.5.0,<0.6.0"
-  ],
-  "version": "2.2.0"
+  ]
 }
