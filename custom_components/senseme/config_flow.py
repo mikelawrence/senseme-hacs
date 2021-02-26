@@ -1,14 +1,14 @@
 """Config flow for SenseME."""
 import ipaddress
-import logging
 
-import voluptuous as vol
 from aiosenseme import async_get_device_by_ip_address, discover_all
 from homeassistant import config_entries
+from homeassistant.const import CONF_HOST
+import voluptuous as vol
 
-from .const import CONF_DEVICE_INPUT, CONF_INFO, DOMAIN
+from .const import CONF_INFO, CONF_HOST_MANUAL, DOMAIN
 
-_LOGGER = logging.getLogger(__name__)
+DISCOVER_TIMEOUT = 5
 
 
 class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -17,71 +17,74 @@ class SensemeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_PUSH
 
-    def _devices_str(self):
-        """Return a human readable form of all discovered devices."""
-        return ", ".join(
-            [
-                f"`{device.name} ({device.address})`"
-                for device in self._discovered_devices
-                if device.uuid not in self._async_current_ids()
-            ]
-        )
-
-    def _prefill_identifier(self):
-        """Return IP address of one device that has not been paired with."""
-        for device in self._discovered_devices:
-            if device.uuid not in self._async_current_ids():
-                return str(device.address)
-        return ""
-
     def __init__(self) -> None:
         """Initialize the SenseME config flow."""
-        self.config = None
-        self._title = "SenseME"
         self._discovered_devices = None
+
+    async def _async_entry_for_device(self, device):
+        """Create a config entry for a device."""
+        await self.async_set_unique_id(device.uuid)
+        self._abort_if_unique_id_configured()
+        return self.async_create_entry(
+            title=device.name,
+            data={CONF_INFO: device.get_device_info},
+        )
+
+    async def async_step_manual(self, user_input=None):
+        """Handle manual entry of an ip address."""
+        errors = {}
+        if user_input is not None:
+            host = user_input[CONF_HOST]
+            try:
+                ipaddress.ip_address(host)
+            except ValueError:
+                errors[CONF_HOST] = "invalid_host"
+            else:
+                device = await async_get_device_by_ip_address(host)
+                if device is not None:
+                    return await self._async_entry_for_device(device)
+
+                errors[CONF_HOST] = "cannot_connect"
+
+        return self.async_show_form(
+            step_id="manual",
+            data_schema=vol.Schema({vol.Required(CONF_HOST): str}),
+            errors=errors,
+        )
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
         # start discovery the first time through
         if self._discovered_devices is None:
-            self._discovered_devices = await discover_all(5)
-        device_list = self._devices_str()
-        default_suggestion = self._prefill_identifier()
-        errors = {}
+            self._discovered_devices = await discover_all(DISCOVER_TIMEOUT)
+
+        current_ids = self._async_current_ids()
+        device_selection = [
+            device.name
+            for device in self._discovered_devices
+            if device.uuid not in current_ids
+        ]
+
+        if not device_selection:
+            return await self.async_step_manual(user_input=None)
+
+        device_selection.append(CONF_HOST_MANUAL)
+
         if user_input is not None:
-            device_name = user_input[CONF_DEVICE_INPUT]
-            selected_device = None
-            # see if device was already discovered
+            if user_input[CONF_HOST] == CONF_HOST_MANUAL:
+                return await self.async_step_manual()
+
             for device in self._discovered_devices:
-                if device == device_name:
-                    selected_device = device
-                    break
-            if selected_device is None:
-                try:
-                    # do some checking on IP address
-                    ipaddress.ip_address(device_name)
-                    selected_device = await async_get_device_by_ip_address(device_name)
-                except ValueError:
-                    _LOGGER.debug("Config flow invalid IP address %s", user_input)
-                    pass
-            if selected_device is None:
-                _LOGGER.debug("Config flow unable to connect to %s", user_input)
-                errors["base"] = "no_devices_found"
-            elif selected_device.uuid in self._async_current_ids():
-                _LOGGER.debug("Config flow entity already configured %s", user_input)
-                errors["base"] = "already_configured"
-            else:
-                await self.async_set_unique_id(selected_device.uuid)
-                _LOGGER.debug("Config flow adding new entity %s", user_input)
-                return self.async_create_entry(
-                    title=selected_device.name,
-                    data={CONF_INFO: selected_device.get_device_info},
-                )
+                if device == user_input[CONF_HOST]:
+                    return await self._async_entry_for_device(device)
+
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                {vol.Required(CONF_DEVICE_INPUT, default=default_suggestion): str}
+                {
+                    vol.Optional(CONF_HOST, default=device_selection[0]): vol.In(
+                        device_selection
+                    )
+                }
             ),
-            errors=errors,
-            description_placeholders={"devices": device_list},
         )
