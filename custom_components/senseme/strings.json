@@ -3,7 +3,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "Select a device, or choose IP Address to manually enter an IP Address.",
+                "description": "Select a device, or choose 'IP Address' to manually enter an IP Address.",
                 "data": {
                     "host": "Device"
                 }

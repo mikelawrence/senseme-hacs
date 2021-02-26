@@ -18,7 +18,7 @@
                 "data": {
                     "host": "Device"
                 },
-                "description": "Select a device, or choose IP Address to manually enter an IP Address."
+                "description": "Select a device, or choose 'IP Address' to manually enter an IP Address."
             }
         }
     },
