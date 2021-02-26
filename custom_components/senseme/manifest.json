@@ -6,7 +6,7 @@
   "dependencies": [],
   "documentation": "https://www.github.com/mikelawrence/senseme-hacs",
   "domain": "senseme",
-  "homeassistant": "2021.3.0",
+  "issue_tracker": "https://github.com/mikelawrence/senseme-hacs/issues",
   "name": "SenseME",
   "requirements": [
     "aiosenseme>=0.5.0,<0.6.0"
