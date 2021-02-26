@@ -1,19 +1,25 @@
 {
-    "title": "SenseME",
     "config": {
-        "flow_title": "SenseME",
         "step": {
             "user": {
-                "title": "Setup a new Big Ass Fans Haiku device with SenseME",
-                "description": "Start by entering the device name (e.g. Studio or Bedroom) or IP address of the Haiku Device you want to add. If any devices were automatically found on your network, they are shown below.\n\nIf you cannot see your device or experience any issues, try specifying the device IP address.\n\n{devices}",
+                "description": "Select a device, or choose none to manually enter an IP Address.",
                 "data": {
-                    "device_input": "Device"
+                    "host": "Device"
+                }
+            },
+            "manual": {
+                "description": "Enter an IP Address.",
+                "data": {
+                    "host": "[%key:common::config_flow::data::host%]"
                 }
             }
         },
-        "error": {
-            "no_devices_found": "[%key:common::config_flow::abort::no_devices_found%]",
+        "abort": {
             "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+        },        
+        "error": {
+            "invalid_host": "[%key:common::config_flow::error::invalid_host%]",
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]"
         }
     }
 }
