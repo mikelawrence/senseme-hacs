@@ -1,10 +1,11 @@
-name: Push actions
+name: Push, Pull-Request and cron actions
 
 on:
   push:
-    branches:
-      - master
-      - dev
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+
 
 jobs:
   validate:
@@ -17,7 +18,7 @@ jobs:
           uses: "hacs/action@main"
           with:
             category: "integration"
-            ignore: brands
+            # ignore: brands
 
         - name: Hassfest validation
           uses: "home-assistant/actions/hassfest@master"
