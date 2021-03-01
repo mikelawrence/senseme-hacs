@@ -6,8 +6,7 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 
 Now [aiosenseme](https://pypi.org/project/aiosenseme/) is the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while.
 
-* Requires Home Assistant 2021.3 or greater
-* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+* This integration is NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
 
 ## Installation
 

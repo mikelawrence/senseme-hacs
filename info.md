@@ -2,8 +2,7 @@
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light.
 
-* Requires Home Assistant 2021.3 or greater.
-* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+* This integration is NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
 
 ### Features
 
