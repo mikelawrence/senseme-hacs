@@ -27,14 +27,14 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 ### Senseme platform attributes
 
 * All platforms: (fan, light and binary_sensor)
-  * **room_name**: When the device is associated in a group of devices this will be the name of the room. All devices in the group will have the same name for **room_name**. **room_name** will be *EMPTY* if the device is not in a room.
-  * **room_type**: When the device is associated in a group of devices this will be the type of room. All fans in the group will have the same **room_type**. There 29 room types: *Undefined*, *Other*, *Master Bedroom*, *Bedroom*, *Den*, *Family Room*, *Living Room*, *Kids Room*, *Kitchen*, *Dining Room*, *Basement*, *Office*, *Patio*, *Porch*, *Hallway*, *Entryway*, *Bathroom*, *Laundry*, *Stairs*, *Closet*, *Sunroom*, *Media Room*, *Gym*, *Garage*, *Outside*, *Loft*, *Playroom*, *Pantry* and *Mudroom*
+  * `room_name`: When the device is associated in a group of devices this will be the name of the room. All devices in the group will have the same name for `room_name`. `room_name` will be *"EMPTY* if the device is not in a room.
+  * `room_type`: When the device is associated in a group of devices this will be the type of room. All fans in the group will have the same `room_type`. There 29 room types: *"Undefined"*, *"Other"*, *"Master Bedroom"*, *"Bedroom"*, *"Den"*, *"Family Room"*, *"Living Room"*, *"Kids Room"*, *"Kitchen"*, *"Dining Room"*, *"Basement"*, *"Office"*, *"Patio"*, *"Porch"*, *"Hallway"*, *"Entryway"*, *"Bathroom"*, *"Laundry"*, *"Stairs"*, *"Closet"*, *"Sunroom"*, *"Media Room"*, *"Gym"*, *"Garage"*, *"Outside"*, *"Loft"*, *"Playroom"*, *"Pantry"* and *"Mudroom"*
 * Fan platform
-  * **auto_comfort**: Auto Comfort allows the fan to monitor and adjust to room conditions like temperature, humidity and occupancy. There are four possible states: *Off*, *Cooling*, *Heating*, and *Followtstat*.
-  * **smartmode**: When **auto_comfort** is set to *Followtstat* the actual **auto_comfort** mode will change based the connected thermostat. When **auto_comfort** is NOT set to *Followtstat* **smartmode** tracks **auto_comfort**.There are three possible states: *Off*, *Cooling* and *Heating*.
-  * **motion_control**: is *On* when the fan is controlled by the occupancy sensor, *Off* otherwise.
+  * `auto_comfort`: Auto Comfort allows the fan to monitor and adjust to room conditions like temperature, humidity and occupancy. There are four possible states: *"Off"*, *"Cooling"*, *"Heating"*, and *"Followtstat"*.
+  * `smartmode`: Smartmode indicates the fan's comfort mode. When `auto_comfort` is set to *"Followtstat"* the actual `auto_comfort` value will change based the connected thermostat otherwise `smartmode` tracks `auto_comfort`. There are three possible states: *"Off"*, *"Cooling"* and *"Heating"*.
+  * `motion_control`: is *"On"* when the fan is controlled by the occupancy sensor, *"Off"* otherwise.
 * Light platform
-  * **motion_control**: is *On* when the light is controlled by the occupancy sensor, *Off* otherwise.
+  * `motion_control`: is *"On"* when the light is controlled by the occupancy sensor, *"Off"* otherwise.
 
 ### Issues
 
