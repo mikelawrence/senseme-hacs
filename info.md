@@ -2,7 +2,7 @@
 
 **Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control.**
 
-**For existing users of this integration all of your previous devices will not exist when you update to this version v2.2.0. All you should need to do is follow the instructions in the Configuration section below to add them back.**
+**For existing users of this integration your previous devices will not exist when you update to this version v2.2.0. All you should need to do is follow the instructions in the Configuration section below to add them back.**
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans (BAF). This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored if present. BAF made a standalone light for a while that is also compatible with this integration.
 
