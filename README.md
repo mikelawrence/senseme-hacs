@@ -4,9 +4,7 @@
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored.
 
-Now [aiosenseme](https://pypi.org/project/aiosenseme/) is the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while.
-
-* This integration is NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+Now [aiosenseme](https://pypi.org/project/aiosenseme/) is the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while. BAF made a standalone light for a while that is also compatible with this integration.
 
 ## Installation
 
@@ -18,10 +16,10 @@ If you have HACS installed on Home Assistant then just search integrations for *
 
 Copy the custom_components folder of this repository to your config folder and restart Home Assistant.
 
-## Configuration using Home Assistant UI
+## Configuration using config flow
 
 1. Go to **Configuration -> Integrations**.
-2. Click on the **+** in the bottom right corner to add a new integration.
+2. Click on the `+` in the bottom right corner to add a new integration.
 3. Search and select **SenseME** integration from the list.
 4. The SenseME integration will attempt to discover SenseME devices on the network and offer a list of available devices for you to add to Home Assistant. You can use a device name but only if present in the list of available devices. For devices that cannot be discovered simply type in the IP address. Click the **Submit** button to add the device to Home Assistant.
 5. Repeat steps 2 - 4 for each device you want to add to Home Assistant.
@@ -36,7 +34,28 @@ The discontinued SenseME standalone lights are also supported, including color t
 
 The Haiku App from Big Ass Fans supports grouping devices into rooms. Changing any device in a room changes all devices in that room. So if you grouped devices you can get away with added only one of those devices to Home Assistant.
 
-## Senseme platform attributes
+## SenseME platforms
+
+When the integration connects to a device it retrieves the *Device Name* you set in the Haiku by BAF app and uses that as a prefix for all created entities.
+
+* For fans you get the following platforms:
+  * `fan` named "*Device Name*".
+    * Supports On/Off.
+    * Supports Speed percentage that snaps to possible speeds, usually 7 not including off.
+    * Supports Directions Forward and Reverse.
+    * Supports Preset Modes Whoosh and Sleep.
+  * `light` (if it exists) named "*Device Name* Light".
+    * Supports Brightness percentage that snaps to possible levels usually 16 not including off.
+  * `binary_sensor` (if it exists) named "*Device Name* Occupancy".
+    * Device class is occupancy.
+* For lights you get the following platforms:
+  * `light` named "*Device Name*".
+    * Supports Brightness percentage that snaps to possible light brightness levels usually 16 not including off.
+    * Supports Color Temp.
+  * `binary_sensor` named "*Device Name* Occupancy".
+    * Device class is occupancy.
+
+## SenseME platform attributes
 
 * All platforms: (fan, light and binary_sensor)
   * `room_name`: When the device is associated in a group of devices this will be the name of the room. All devices in the group will have the same name for `room_name`. `room_name` will be *"EMPTY* if the device is not in a room.
@@ -59,7 +78,7 @@ There are no options for the SenseME integration.
 
 ## Issues
 
-* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/). This probably applies to the [es6 fan](https://www.bigassfans.com/fans/es6/) as well but it has not been tested.
 * Unknown models will produce a warning 'Discovered unknown SenseME device model' in Home Assistant. If you get this warning post an issue on [GitHub](https://github.com/mikelawrence/senseme-hacs/issues) with the model detected and I'll add that model to stop the warning.
 * The occupancy sensor is treated differently than other devices settings/states; occupancy state changes are not pushed immediately and must be detected with periodic status updates. This will make updates to the occupancy sensor sluggish. This sensor in my two fans is a bit erratic. They tend to detect occupancy when there is no one present including pets.
 * Sometimes SenseME devices just don't respond to discovery packets. If you are trying to add the device you can simply use the IP address or you can try a again later when the SenseME devices are more cooperative.
