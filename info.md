@@ -1,8 +1,12 @@
 ## SenseME integration
 
-**Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control.**
-
-**For existing users of this integration your previous devices will not exist when you update to this version v2.2.0. All you should need to do is follow the instructions in the Configuration section below to add them back.**
+{% if installed %}
+{% if selected_tag.replace("v", "").replace(".","") | int >= 220 %}
+{% if version_installed.replace("v", "").replace(".","") | int < 220  %}
+**Important Note: Your previous devices will not exist when you update to this version. All you should need to do is follow the instructions in the Configuration section below to add them back. The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control.**
+{% endif %}
+{% endif %}
+{% endif %}
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans (BAF). This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored if present. BAF made a standalone light for a while that is also compatible with this integration.
 
@@ -12,11 +16,11 @@ If your fan uses the Haiku by BAF app there is a good chance your device can be 
 
 * Confirmed support of Haiku, Haiku H, and Haiku L fans.
 * Confirmed support of stand alone Haiku Light.
-* Supports [Wireless Wall Control](https://www.bigassfans.com/support/haiku-wireless-wall-control/) indirectly through fan status reporting.
 * Probably supports Haiku C fans. If you have a Haiku C fan you might be seeing a warning about an unknown model in the Home Assistant log. Please open an issue [here](https://github.com/mikelawrence/senseme-hacs/issues) to let me know the model name.
+* Supports [Wireless Wall Control](https://www.bigassfans.com/support/haiku-wireless-wall-control/) indirectly through fan status reporting.
 * Configuration via Home Assistant frontend.
 * Haiku Fan supports speed, direction, light and occupancy sensor if available.
-* Whoosh and sleep modes are available as preset modes.
+* Haiku Fan whoosh and sleep modes are available as preset modes.
 * Haiku Light supports brightness, color temp and occupancy sensor.
 * Control of any one device in a room (configured in Haiku by BAF app) affects all devices in that room. This is a feature of the devices not this integration.
 
