@@ -1,10 +1,8 @@
 ## SenseME integration
 
 {% if installed %}
-{% if selected_tag.replace("v", "").replace(".","") | int >= 220 %}
 {% if version_installed.replace("v", "").replace(".","") | int < 220  %}
 **Important Note: Your previous devices will not exist when you update to this version. All you should need to do is follow the instructions in the Configuration section below to add them back. The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control.**
-{% endif %}
 {% endif %}
 {% endif %}
 
