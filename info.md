@@ -20,7 +20,7 @@ If your fan uses the "Haiku by BAF" app there is a good chance your device can b
 * Haiku Light supports brightness, color temp and occupancy sensor.
 * Control of any one device in a room (BAF App configured) affects all devices in that room. This is a feature of the devices not this integration.
 
-### Usage
+### Configuration
 
 1. Go to **Configuration -> Integrations**.
 2. Click on the **+ ADD INTEGRATION** button in the bottom right corner.

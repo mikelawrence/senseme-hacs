@@ -16,13 +16,17 @@ If you have HACS installed on Home Assistant then just search integrations for *
 
 Copy the custom_components folder of this repository to your config folder and restart Home Assistant.
 
-## Configuration using config flow
+## Configuration
 
 1. Go to **Configuration -> Integrations**.
-2. Click on the `+` in the bottom right corner to add a new integration.
-3. Search and select **SenseME** integration from the list.
-4. The SenseME integration will attempt to discover SenseME devices on the network and offer a list of available devices for you to add to Home Assistant. You can use a device name but only if present in the list of available devices. For devices that cannot be discovered simply type in the IP address. Click the **Submit** button to add the device to Home Assistant.
-5. Repeat steps 2 - 4 for each device you want to add to Home Assistant.
+2. Click on the **+ ADD INTEGRATION** button in the bottom right corner.
+3. Search for and select the `SenseME` integration.
+<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/search.png"/>
+4. If any devices are discovered you will see the dialog below. Select a discovered device and click `Submit` and you are done. If you would prefer to add a device by IP address select that option, click `Submit`, and you will be presented with the dialog in step 5.
+<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/device.png"/>
+5. If no devices were discovered or you selected `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices
+<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/address.png"/>
+6. Repeat these steps for each device you wish to add.
 
 ## Using the SenseME integration
 
