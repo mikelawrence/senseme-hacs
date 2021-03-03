@@ -5,9 +5,9 @@
 * Support the new fan model in Home Assistant 2021.3. Speed is now based on percentage. Whoosh has changed to a preset mode and now Sleep is also available as a preset mode. Let me know if this works for your use case!
 * Senseme Device can now be added by IP address instead of requiring discovery first. Some users prefer to isolate their IoT devices on a separate network. Discovery uses UDP broadcast packets which by design do not traverse through routers. Now these users will be able to still control their Haiku devices.
 * There are substantial changes to the integration's config flow. Previously, devices were discovered and all were added to Home Assistant. Now discovered devices are suggestions to what the user may want to add to Home Assistant. Here you can type in an IP address for a device that cannot be discovered. Each device is now added separately.
-* Once devices are added to Home Assistant they are remembered between restarts and discovery is not required to reconnect. Sometimes discovery doesn't work and so a reboot could cause a device to disappear from Home Assistant until rediscovered. Sometimes devices just don't respond to requests from the LAN. If this happens on Home Assistant restart the previously added devices will still show up but as unavailable.
-* Since whoosh is now a preset mode instead of hidden behind ocillate functionality there was no real need for integrations options so they have been removed.
-* Support [aiosenseme v0.5.2](https://pypi.org/project/aiosenseme/) and greater.
+* Once devices are added to Home Assistant they are remembered between restarts and discovery is not required to reconnect. Sometimes discovery doesn't work and so a reboot could cause a device to disappear from Home Assistant until rediscovered and sometimes they just don't respond to requests from the LAN. If this happens on Home Assistant restart the previously added devices will still show up but as unavailable.
+* Since whoosh is now a preset mode instead of hidden behind oscillate functionality there was no real need for integrations options so they have been removed.
+* Bump version aiosenseme >= v0.5.2.
 * Sorry but translations have been lost in this release.
 
 ## 2.1.3 - Add Norwegian translation. Thanks [hwikene](https://github.com/hwikene)

@@ -1,8 +1,12 @@
 ## SenseME integration
 
-The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light.
+**Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control.**
 
-* This integration is NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+**For existing users of this integration your previous devices will not exist when you update to this version v2.2.0. All you should need to do is follow the instructions in the Configuration section below to add them back.**
+
+The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans (BAF). This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored if present. BAF made a standalone light for a while that is also compatible with this integration.
+
+If your fan uses the "Haiku by BAF" app there is a good chance your device can be controlled by this integration. Your luck runs out if the device you are trying to control uses the "Big Ass Fans" app.
 
 ### Features
 
@@ -12,17 +16,48 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 * Probably supports Haiku C fans. If you have a Haiku C fan you might be seeing a warning about an unknown model in the Home Assistant log. Please open an issue [here](https://github.com/mikelawrence/senseme-hacs/issues) to let me know the model name.
 * Configuration via Home Assistant frontend.
 * Haiku Fan supports speed, direction, light and occupancy sensor if available.
-* Whoosh and sleep modes are available as present modes.
+* Whoosh and sleep modes are available as preset modes.
 * Haiku Light supports brightness, color temp and occupancy sensor.
 * Control of any one device in a room (BAF App configured) affects all devices in that room. This is a feature of the devices not this integration.
 
-### Usage
+### Configuration
 
 1. Go to **Configuration -> Integrations**.
-2. Click on the **+** in the bottom right corner to add a new integration.
-3. Search and select **SenseME** integration from the list.
-4. The SenseME integration will attempt to discover SenseME devices on the network and offer a list of available devices for you to add to Home Assistant. You can use a device name but only if it show in the list of available devices. For devices that cannot be discovered simply type in the IP address. Click the **Submit** button to add the device to Home Assistant.
-5. Repeat steps 2 - 4 for each device you want to add to Home Assistant.
+2. Click on the **+ ADD INTEGRATION** button in the bottom right corner.
+3. Search for and select the `SenseME` integration.
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/search.png"/>
+
+4. If any devices are discovered you will see the dialog below. Select a discovered device and click `Submit` and you are done. If you would prefer to add a device by IP address select that option, click `Submit`, and you will be presented with the dialog in step 5.
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/device.png"/>
+
+5. If no devices were discovered or you selected the `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices.
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/address.png"/>
+
+6. Repeat these steps for each device you wish to add.
+
+### SenseME platforms
+
+When the integration connects to a device it retrieves the *Device Name* you set in the Haiku by BAF app and uses that as a prefix for all created entities.
+
+* For fans you get the following platforms:
+  * `fan` named "*Device Name*".
+    * Supports On/Off.
+    * Supports Speed percentage that snaps to possible speeds, usually 7 not including off.
+    * Supports Directions Forward and Reverse.
+    * Supports Preset Modes Whoosh and Sleep.
+  * `light` (if it exists) named "*Device Name* Light".
+    * Supports Brightness percentage that snaps to possible levels usually 16 not including off.
+  * `binary_sensor` (if it exists) named "*Device Name* Occupancy".
+    * Device class is occupancy.
+* For lights you get the following platforms:
+  * `light` named "*Device Name*".
+    * Supports Brightness percentage that snaps to possible light brightness levels usually 16 not including off.
+    * Supports Color Temp.
+  * `binary_sensor` named "*Device Name* Occupancy".
+    * Device class is occupancy.
 
 ### Senseme platform attributes
 
@@ -38,7 +73,7 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 
 ### Issues
 
-* This integration is currently NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/).
+* This integration is NOT compatible with the [i6 fan](https://www.bigassfans.com/fans/i6/). This probably applies to the [es6 fan](https://www.bigassfans.com/fans/es6/) as well but it has not been tested.
 * Unknown models will produce a warning 'Discovered unknown SenseME device model' in the Home Assistant log. If you get this warning post an issue on [GitHub](https://github.com/mikelawrence/senseme-hacs/issues) with the model detected and I'll try add that model to stop the warning. Unknown models are treated as fans; this may cause problems.
 * The occupancy sensor is treated differently than other devices settings/states; occupancy state changes are not pushed immediately and must be detected with periodic status updates. This will make updates to the occupancy sensor sluggish. This sensor in my two fans is also erratic. They tend to detect occupancy when there is no one present including pets.
 * Sometimes SenseME devices just don't respond to discovery packets. If you are trying to add the device you can simply use the IP address or you can try a again later when the SenseME devices are more cooperative.
