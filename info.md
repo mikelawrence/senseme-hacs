@@ -2,7 +2,7 @@
 
 {% if installed %}
 {% if version_installed.replace("v", "").replace(".","") | int < 220  %}
-**Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control. You will need to remove the existing SenseME integration from Home Assistant before adding your devices one at a time as discussed below in the Configuration section. It doesn't matter if you remove the integration before or after upgrading the SensmME integration via HACS.**
+**Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control. You will need to remove the existing SenseME integration from Home Assistant before adding your devices one at a time as discussed below in the Configuration section. It doesn't matter if you remove the integration before or after upgrading the SenseME integration via HACS.**
 {% endif %}
 {% endif %}
 
