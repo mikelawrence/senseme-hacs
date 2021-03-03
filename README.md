@@ -2,7 +2,7 @@
 
 [![Github version](https://img.shields.io/github/v/release/mikelawrence/senseme-hacs)](https://github.com/mikelawrence/senseme-hacs/releases/latest) [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://hacs.xyz/)
 
-The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored.
+The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans. This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored. BAF made a standalone light for a while that is also compatible with this integration.
 
 Now [aiosenseme](https://pypi.org/project/aiosenseme/) is the underlying library. It is asynchronous and fits well with Home Assistant. There are several key new features like automatic fan discovery and push updates. It keeps a socket open to each fan added to Home Assistant for push updates and commands like turn fan on. The single socket approach seems to cause fewer issues with loss of connection or the fan going dumb for while. BAF made a standalone light for a while that is also compatible with this integration.
 
@@ -21,11 +21,17 @@ Copy the custom_components folder of this repository to your config folder and r
 1. Go to **Configuration -> Integrations**.
 2. Click on the **+ ADD INTEGRATION** button in the bottom right corner.
 3. Search for and select the `SenseME` integration.
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/search.png"/>
+
+   <img src="img/search.png"/>
+
 4. If any devices are discovered you will see the dialog below. Select a discovered device and click `Submit` and you are done. If you would prefer to add a device by IP address select that option, click `Submit`, and you will be presented with the dialog in step 5.
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/device.png"/>
-5. If no devices were discovered or you selected `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/dev/img/address.png"/>
+
+   <img src="img/device.png"/>
+
+5. If no devices were discovered or you selected `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices.
+
+   <img src="img/address.png"/>
+
 6. Repeat these steps for each device you wish to add.
 
 ## Using the SenseME integration
@@ -34,9 +40,9 @@ The SenseME integration supports speed and direction for fans. Whoosh and Sleep 
 
 If the device has an occupancy sensor it is also added to Home Assistant but I have not looked at how well it performs. As far as I can tell there are no settings/adjustments for this sensor so what you see is what you get.
 
-The discontinued SenseME standalone lights are also supported, including color temperature.
+The discontinued Haiku standalone lights are also supported, including color temperature.
 
-The Haiku App from Big Ass Fans supports grouping devices into rooms. Changing any device in a room changes all devices in that room. So if you grouped devices you can get away with added only one of those devices to Home Assistant.
+The Haiku by BAF app supports grouping devices into rooms. Changing any device in a room changes all devices in that room. So if you grouped devices you can get away with added only one of those devices to Home Assistant.
 
 ## SenseME platforms
 

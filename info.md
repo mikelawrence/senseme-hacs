@@ -25,11 +25,17 @@ If your fan uses the "Haiku by BAF" app there is a good chance your device can b
 1. Go to **Configuration -> Integrations**.
 2. Click on the **+ ADD INTEGRATION** button in the bottom right corner.
 3. Search for and select the `SenseME` integration.
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/search.png"/>
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/search.png"/>
+
 4. If any devices are discovered you will see the dialog below. Select a discovered device and click `Submit` and you are done. If you would prefer to add a device by IP address select that option, click `Submit`, and you will be presented with the dialog in step 5.
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/device.png"/>
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/device.png"/>
+
 5. If no devices were discovered or you selected `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices
-<img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/address.png"/>
+
+   <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/address.png"/>
+
 6. Repeat these steps for each device you wish to add.
 
 ## SenseME platforms
