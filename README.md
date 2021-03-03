@@ -28,7 +28,7 @@ Copy the custom_components folder of this repository to your config folder and r
 
    <img src="img/device.png"/>
 
-5. If no devices were discovered or you selected `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices.
+5. If no devices were discovered or you selected the `IP Address` option the dialog below is presented. Here you can type in an IP address of undiscoverable devices.
 
    <img src="img/address.png"/>
 
