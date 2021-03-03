@@ -6,7 +6,7 @@
 
 The Haiku with SenseME fan is a WiFi connected fan and optional light from Big Ass Fans (BAF). This Home Assistant integration provides control of these fans and light. The occupancy sensor is also monitored if present. BAF made a standalone light for a while that is also compatible with this integration.
 
-If your fan uses the "Haiku by BAF" app there is a good chance your device can be controlled by this integration. Your luck runs out if the device you are trying to control uses the "Big Ass Fans" app.
+If your fan uses the Haiku by BAF app there is a good chance your device can be controlled by this integration. Your luck runs out if the device you are trying to control uses the "Big Ass Fans" app.
 
 ### Features
 
@@ -18,7 +18,7 @@ If your fan uses the "Haiku by BAF" app there is a good chance your device can b
 * Haiku Fan supports speed, direction, light and occupancy sensor if available.
 * Whoosh and sleep modes are available as preset modes.
 * Haiku Light supports brightness, color temp and occupancy sensor.
-* Control of any one device in a room (BAF App configured) affects all devices in that room. This is a feature of the devices not this integration.
+* Control of any one device in a room (configured in Haiku by BAF app) affects all devices in that room. This is a feature of the devices not this integration.
 
 ### Configuration
 
