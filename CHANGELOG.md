@@ -1,5 +1,9 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.2.1 - Improve documentation for existing users
+
+* No functional changes.
+
 ## 2.2.0 - Support new fan model in Home Assistant
 
 * Support the new fan model in Home Assistant 2021.3. Speed is now based on percentage. Whoosh has changed to a preset mode and now Sleep is also available as a preset mode. Let me know if this works for your use case!
