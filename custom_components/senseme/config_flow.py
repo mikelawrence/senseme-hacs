@@ -1,12 +1,12 @@
 """Config flow for SenseME."""
 import ipaddress
 
+import voluptuous as vol
 from aiosenseme import async_get_device_by_ip_address, discover_all
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
-import voluptuous as vol
 
-from .const import CONF_INFO, CONF_HOST_MANUAL, DOMAIN
+from .const import CONF_HOST_MANUAL, CONF_INFO, DOMAIN
 
 DISCOVER_TIMEOUT = 5
 

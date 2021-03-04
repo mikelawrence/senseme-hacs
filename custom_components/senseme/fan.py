@@ -19,7 +19,6 @@ from homeassistant.util.percentage import (
 from . import SensemeEntity
 from .const import (
     DOMAIN,
-    PRESET_MODE_NONE,
     PRESET_MODE_SLEEP,
     PRESET_MODE_WHOOSH,
     SENSEME_DIRECTION_FORWARD,
@@ -52,7 +51,6 @@ class HASensemeFan(SensemeEntity, FanEntity):
         return {
             "auto_comfort": self._device.fan_autocomfort.capitalize(),
             "smartmode": self._device.fan_smartmode.capitalize(),
-            "motion_control": "On" if self._device.motion_fan_auto else "Off",
             **super().device_state_attributes,
         }
 
@@ -64,16 +62,14 @@ class HASensemeFan(SensemeEntity, FanEntity):
     @property
     def current_direction(self) -> str:
         """Return the fan direction."""
-        direction = self._device.fan_dir
-        if direction == SENSEME_DIRECTION_FORWARD:
+        if self._device.fan_dir == SENSEME_DIRECTION_FORWARD:
             return DIRECTION_FORWARD
         return DIRECTION_REVERSE
 
     @property
     def supported_features(self) -> int:
         """Flag supported features."""
-        supported_features = SUPPORT_SET_SPEED | SUPPORT_DIRECTION
-        return supported_features
+        return SUPPORT_SET_SPEED | SUPPORT_DIRECTION
 
     @property
     def speed_count(self) -> int:
@@ -92,14 +88,12 @@ class HASensemeFan(SensemeEntity, FanEntity):
         """Return the current preset mode."""
         if self._device.fan_whoosh_mode:
             return PRESET_MODE_WHOOSH
-        if self._device.sleep_mode:
-            return PRESET_MODE_SLEEP
-        return PRESET_MODE_NONE
+        return None
 
     @property
     def preset_modes(self) -> Optional[List[str]]:
         """Return a list of available preset modes."""
-        return [PRESET_MODE_NONE, PRESET_MODE_WHOOSH, PRESET_MODE_SLEEP]
+        return [PRESET_MODE_WHOOSH]
 
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed of the fan, as a percentage."""
@@ -130,15 +124,12 @@ class HASensemeFan(SensemeEntity, FanEntity):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if preset_mode == PRESET_MODE_NONE:
-            self._device.sleep_mode = False
-            self._device.fan_whoosh_mode = False
-            return
         if preset_mode == PRESET_MODE_WHOOSH:
+            # Sleep mode must be turned off
+            # for Whoosh to work.
+            if self._device.sleep_mode:
+                self._device.sleep_mode = False
             self._device.fan_whoosh_mode = True
-            return
-        if preset_mode == PRESET_MODE_SLEEP:
-            self._device.sleep_mode = True
             return
         raise ValueError(f"Invalid preset mode: {preset_mode}")
 

@@ -41,15 +41,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
             self._supported_features |= SUPPORT_COLOR_TEMP
 
     @property
-    def device_state_attributes(self) -> dict:
-        """Get the current device state attributes."""
-        return {
-            "sleep_mode": "On" if self._device.sleep_mode else "Off",
-            "motion_control": "On" if self._device.motion_light_auto else "Off",
-            **super().device_state_attributes,
-        }
-
-    @property
     def unique_id(self) -> str:
         """Return a unique identifier for this light."""
         return f"{self._device.uuid}-LIGHT"
