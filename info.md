@@ -10,7 +10,7 @@ The Haiku with SenseME fan is a WiFi connected fan and optional light from Big A
 
 Be sure to setup your devices with the Haiku by BAF app before using this integration.
 
-> * **Important Note: If your device uses the Big Ass Fans app, like the i6 or es6 fans, I'm sorry to say that this integration won't work for you.**
+> **Important Note: If your device uses the Big Ass Fans app, like the i6 or es6 fans, I'm sorry to say that this integration won't work for you.**
 
 ### Features
 
