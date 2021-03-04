@@ -1,8 +1,13 @@
 ## SenseME integration
 
 {% if installed %}
+{% if version_installed.replace("v", "").replace(".","") | int >= 220  %}
+{% if version_installed.replace("v", "").replace(".","") | int < 222  %}
+> **Note: Sleep Mode is now controlled by a separate switch instead of the Sleep preset mode.**
+{% endif %}
+{% endif %}
 {% if version_installed.replace("v", "").replace(".","") | int < 220  %}
-> **Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control. You will need to remove the existing SenseME integration from Home Assistant before adding your devices one at a time as discussed below in the Configuration section. It doesn't matter if you remove the integration before or after upgrading the SenseME integration via HACS.**
+> **Important Note: The SenseME integration has had significant changes to the way devices are handled. Previously just adding the integration enabled discovery and would automatically add all found devices to Home Assistant. This is no longer the case. Now you add the SenseME integration for each device you would like Home Assistant to control. Existing users will need to remove the existing SenseME integration from Home Assistant before adding your devices one at a time as discussed below in the Configuration section.**
 {% endif %}
 {% endif %}
 
@@ -19,8 +24,10 @@ Be sure to setup your devices with the Haiku by BAF app before using this integr
 * Supports [Wireless Wall Control](https://www.bigassfans.com/support/haiku-wireless-wall-control/) indirectly through fan status reporting.
 * Probably supports Haiku C fans. If you have a Haiku C fan you might be seeing a warning about an unknown model in the Home Assistant log. Please open an issue [here](https://github.com/mikelawrence/senseme-hacs/issues) to let me know the model name.
 * Haiku Fan supports speed, direction, light and occupancy sensor if available.
-* Haiku Fan whoosh and sleep modes are available as preset modes.
+* Haiku Fan Whoosh is available as a preset mode.
+* Haiku Fan Sleep Mode and Motion control are supported by separate switches.
 * Haiku Light supports brightness, color temp and occupancy sensor.
+* Haiku Light Sleep Mode and Motion control are supported by separate switches.
 * Adding just one of the devices in a room will allow Home Assistant to control all of them.
 
 ### Configuration
@@ -41,4 +48,4 @@ Be sure to setup your devices with the Haiku by BAF app before using this integr
 
 6. Repeat these steps for each device you wish to add.
 
-Selected Version {{ selected_tag }}
+Selected Version {{ selected_tag }}, Installed version {{ version_installed }}

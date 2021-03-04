@@ -19,6 +19,7 @@ FAN_LIGHT_SWITCHES = [
 ]
 
 LIGHT_SWITCHES = [
+    ["sleep_mode", "sleep_mode", "Sleep Mode"],
     ["motion_light_auto", "motion_light_auto", "Motion"],
 ]
 

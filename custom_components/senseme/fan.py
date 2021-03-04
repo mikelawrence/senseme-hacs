@@ -19,7 +19,6 @@ from homeassistant.util.percentage import (
 from . import SensemeEntity
 from .const import (
     DOMAIN,
-    PRESET_MODE_SLEEP,
     PRESET_MODE_WHOOSH,
     SENSEME_DIRECTION_FORWARD,
     SENSEME_DIRECTION_REVERSE,
@@ -125,8 +124,7 @@ class HASensemeFan(SensemeEntity, FanEntity):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
         if preset_mode == PRESET_MODE_WHOOSH:
-            # Sleep mode must be turned off
-            # for Whoosh to work.
+            # Sleep mode must be off for Whoosh to work.
             if self._device.sleep_mode:
                 self._device.sleep_mode = False
             self._device.fan_whoosh_mode = True
