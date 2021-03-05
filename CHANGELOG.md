@@ -1,5 +1,9 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.2.3 - Bump aiosenseme library to >= v.5.4
+
+* This improves detection logic for lost connections to devices.
+
 ## 2.2.2 - Add additional controls
 
 * Sleep Mode is now a separate switch instead of a preset mode.

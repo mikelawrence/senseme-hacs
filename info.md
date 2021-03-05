@@ -47,5 +47,3 @@ Be sure to setup your devices with the Haiku by BAF app before using this integr
    <img src="https://raw.githubusercontent.com/mikelawrence/senseme-hacs/master/img/address.png"/>
 
 6. Repeat these steps for each device you wish to add.
-
-Selected Version {{ selected_tag }}, Installed version {{ version_installed }}
