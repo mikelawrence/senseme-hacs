@@ -1,6 +1,6 @@
 # Changelog for Home Assistant integration for SenseME fans
 
-## 2.2.3 - Bump aiosenseme library to >= v.5.4
+## 2.2.3 - Bump aiosenseme library to >= v0.5.4
 
 * This improves detection logic for lost connections to devices.
 
