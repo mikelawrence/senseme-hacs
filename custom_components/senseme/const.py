@@ -12,9 +12,7 @@ CONF_INFO = "info"
 CONF_HOST_MANUAL = "IP Address"
 
 # Fan Preset Modes
-PRESET_MODE_NONE = "None"
 PRESET_MODE_WHOOSH = "Whoosh"
-PRESET_MODE_SLEEP = "Sleep"
 
 # Fan Directions
 SENSEME_DIRECTION_FORWARD = "FWD"

@@ -53,29 +53,38 @@ When the integration connects to a device it retrieves the *Device Name* you set
     * Supports On/Off.
     * Supports Speed percentage that snaps to possible speeds, usually 7 not including off.
     * Supports Directions Forward and Reverse.
-    * Supports Preset Modes Whoosh and Sleep.
+    * Supports Preset Mode Whoosh.
   * `light` (if it exists) named "*Device Name* Light".
     * Supports Brightness percentage that snaps to possible levels usually 16 not including off.
   * `binary_sensor` (if it exists) named "*Device Name* Occupancy".
+    * Current occupancy status.
     * Device class is occupancy.
+  * `switch` named "*Device Name* Sleep Mode".
+    * Enable/disable sleep mode in fan.
+  * `switch` named "*Device Name* Motion".
+    * Enable/disable automatic control of fan based on occupancy.
+  * `switch` (if it exists) named "*Device Name* Light Motion".
+    * Enable/disable automatic control of fan's light based on occupancy.
 * For lights you get the following platforms:
   * `light` named "*Device Name*".
     * Supports Brightness percentage that snaps to possible light brightness levels usually 16 not including off.
     * Supports Color Temp.
   * `binary_sensor` named "*Device Name* Occupancy".
+    * Current occupancy status.
     * Device class is occupancy.
+  * `switch` named "*Device Name* Sleep Mode".
+    * Enable/disable sleep mode in light.
+  * `switch` named "*Device Name* Motion".
+    * Enable/disable automatic control of light based on occupancy.
 
 ## SenseME platform attributes
 
-* All platforms: (fan, light and binary_sensor)
+* All platforms: (fan, light, binary_sensor and sensor)
   * `room_name`: When the device is associated in a group of devices this will be the name of the room. All devices in the group will have the same name for `room_name`. `room_name` will be *"EMPTY* if the device is not in a room.
   * `room_type`: When the device is associated in a group of devices this will be the type of room. All fans in the group will have the same `room_type`. There 29 room types: *"Undefined"*, *"Other"*, *"Master Bedroom"*, *"Bedroom"*, *"Den"*, *"Family Room"*, *"Living Room"*, *"Kids Room"*, *"Kitchen"*, *"Dining Room"*, *"Basement"*, *"Office"*, *"Patio"*, *"Porch"*, *"Hallway"*, *"Entryway"*, *"Bathroom"*, *"Laundry"*, *"Stairs"*, *"Closet"*, *"Sunroom"*, *"Media Room"*, *"Gym"*, *"Garage"*, *"Outside"*, *"Loft"*, *"Playroom"*, *"Pantry"* and *"Mudroom"*
 * Fan platform
   * `auto_comfort`: Auto Comfort allows the fan to monitor and adjust to room conditions like temperature, humidity and occupancy. There are four possible states: *"Off"*, *"Cooling"*, *"Heating"*, and *"Followtstat"*.
   * `smartmode`: Smartmode indicates the fan's comfort mode. When `auto_comfort` is set to *"Followtstat"* the actual `auto_comfort` value will change based the connected thermostat otherwise `smartmode` tracks `auto_comfort`. There are three possible states: *"Off"*, *"Cooling"* and *"Heating"*.
-  * `motion_control`: is *"On"* when the fan is controlled by the occupancy sensor, *"Off"* otherwise.
-* Light platform
-  * `motion_control`: is *"On"* when the light is controlled by the occupancy sensor, *"Off"* otherwise.
 
 ## SenseME integration options
 

@@ -1,5 +1,11 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.2.2 - Add additional controls
+
+* Sleep Mode is now a separate switch instead of a preset mode.
+* Added Motion switch for fans and lights. Home Assistant can enable/disable SenseME's automatic control of devices when occupancy is detected.
+* Thanks go to [bdraco](https://github.com/bdraco) for these changes!
+
 ## 2.2.1 - Improve documentation for existing users
 
 * No functional changes.
@@ -13,6 +19,7 @@
 * Since whoosh is now a preset mode instead of hidden behind oscillate functionality there was no real need for integrations options so they have been removed.
 * Bump version aiosenseme >= v0.5.2.
 * Sorry but translations have been lost in this release.
+* Thanks go to [bdraco](https://github.com/bdraco) for all the great help in improving this release!
 
 ## 2.1.3 - Add Norwegian translation. Thanks [hwikene](https://github.com/hwikene)
 
