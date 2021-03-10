@@ -73,7 +73,7 @@ class HASensemeFan(SensemeEntity, FanEntity):
     @property
     def speed_count(self) -> int:
         """Return the number of speeds."""
-        return self._device.fan_speed_limits[1]
+        return self._device.fan_speed_max
 
     @property
     def percentage(self) -> str:
@@ -114,7 +114,8 @@ class HASensemeFan(SensemeEntity, FanEntity):
                 self._device.sleep_mode = True
                 return
         if percentage is None:
-            percentage = 25
+            self._device.fan_on = True
+            return
         await self.async_set_percentage(percentage)
 
     async def async_turn_off(self, **kwargs: Any) -> None:
