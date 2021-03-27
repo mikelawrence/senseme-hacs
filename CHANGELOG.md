@@ -1,5 +1,9 @@
 # Changelog for Home Assistant integration for SenseME fans
 
+## 2.2.5 - Bump aiosenseme library to >= v0.5.5
+
+* Improve startup time when initially connecting to device
+
 ## 2.2.4 - Allow fan to resume last speed when turned on
 
 * Previous versions set the fan percentage to 25% (speed 2) when just turned on. Now when the fan is turned on and percentage is not specified the fan will resume last set speed.
