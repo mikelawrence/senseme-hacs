@@ -2,7 +2,8 @@
 
 ## 2.2.5 - Bump aiosenseme library to >= v0.5.5
 
-* Improve startup time when initially connecting to device
+* Improve startup time when initially connecting to device.
+* Thanks go to [bdraco](https://github.com/bdraco) for this change!
 
 ## 2.2.4 - Allow fan to resume last speed when turned on
 
