@@ -114,3 +114,14 @@ logger:
     aiosenseme.device: debug
     aiosenseme.discovery: debug
 ```
+
+## Contributing
+
+To test changes locally you can use [Docker Compose](https://docs.docker.com/compose/)
+
+Start Home Assistant:
+```bash
+docker-compose up
+```
+
+This will create the normal `config` directory in `.config`. Once done, you probably will want to configure your logger for [debugging](#debugging).

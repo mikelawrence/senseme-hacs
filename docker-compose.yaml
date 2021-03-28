@@ -1,0 +1,14 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:stable
+    volumes:
+      -  /etc/localtime:/etc/localtime:ro
+      - .config:/config
+      - ./custom_components:/config/custom_components
+    restart: always
+    ports:
+      - 8123:8123
+      - 31415:31415/udp
+    network_mode: "bridge"
