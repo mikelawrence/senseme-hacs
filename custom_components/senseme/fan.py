@@ -45,12 +45,12 @@ class HASensemeFan(SensemeEntity, FanEntity):
         return f"{self._device.uuid}-FAN"
 
     @property
-    def device_state_attributes(self) -> dict:
+    def extra_state_attributes(self) -> dict:
         """Get the current device state attributes."""
         return {
             "auto_comfort": self._device.fan_autocomfort.capitalize(),
             "smartmode": self._device.fan_smartmode.capitalize(),
-            **super().device_state_attributes,
+            **super().extra_state_attributes,
         }
 
     @property
