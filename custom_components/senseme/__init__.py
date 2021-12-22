@@ -104,7 +104,7 @@ class SensemeEntity:
         }
 
     @property
-    def device_state_attributes(self) -> dict:
+    def extra_state_attributes(self) -> dict:
         """Get the current device state attributes."""
         return {
             "room_name": self._device.room_name,
