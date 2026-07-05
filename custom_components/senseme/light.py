@@ -5,9 +5,8 @@ from typing import Any
 from aiosenseme import SensemeDevice
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR_TEMP,
+    ATTR_COLOR_TEMP_KELVIN,
+    ColorMode,
     LightEntity,
 )
 from homeassistant.const import CONF_DEVICE
@@ -36,9 +35,14 @@ class HASensemeLight(SensemeEntity, LightEntity):
         else:
             name = f"{device.name} Light"
         super().__init__(device, name)
-        self._supported_features = SUPPORT_BRIGHTNESS
+        # A standalone SenseME light supports color temperature; a fan-light is
+        # brightness-only. In the modern API COLOR_TEMP implies brightness.
         if device.is_light:
-            self._supported_features |= SUPPORT_COLOR_TEMP
+            self._attr_color_mode = ColorMode.COLOR_TEMP
+            self._attr_supported_color_modes = {ColorMode.COLOR_TEMP}
+        else:
+            self._attr_color_mode = ColorMode.BRIGHTNESS
+            self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
 
     @property
     def unique_id(self) -> str:
@@ -59,40 +63,32 @@ class HASensemeLight(SensemeEntity, LightEntity):
         return int(light_brightness)
 
     @property
-    def color_temp(self) -> int:
-        """Return the color temp value in mireds."""
+    def color_temp_kelvin(self) -> int:
+        """Return the color temperature value in Kelvin."""
         if not self._device.is_light:
             return None
-        color_temp = int(round(1000000.0 / float(self._device.light_color_temp)))
-        return color_temp
+        return int(self._device.light_color_temp)
 
     @property
-    def min_mireds(self):
-        """Return the coldest color temp that this light supports."""
+    def min_color_temp_kelvin(self):
+        """Return the warmest color temperature this light supports, in Kelvin."""
         if not self._device.is_light:
             return None
-        color_temp = int(round(1000000.0 / float(self._device.light_color_temp_max)))
-        return color_temp
+        return int(self._device.light_color_temp_min)
 
     @property
-    def max_mireds(self):
-        """Return the warmest color temp that this light supports."""
+    def max_color_temp_kelvin(self):
+        """Return the coldest color temperature this light supports, in Kelvin."""
         if not self._device.is_light:
             return None
-        color_temp = int(round(1000000.0 / float(self._device.light_color_temp_min)))
-        return color_temp
-
-    @property
-    def supported_features(self) -> int:
-        """Flag supported features."""
-        return self._supported_features
+        return int(self._device.light_color_temp_max)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the light."""
         brightness = kwargs.get(ATTR_BRIGHTNESS)
-        color_temp = kwargs.get(ATTR_COLOR_TEMP)
+        color_temp = kwargs.get(ATTR_COLOR_TEMP_KELVIN)
         if color_temp is not None:
-            self._device.light_color_temp = int(round(1000000.0 / float(color_temp)))
+            self._device.light_color_temp = int(color_temp)
         if brightness is None:
             # no brightness, just turn the light on
             self._device.light_on = True
