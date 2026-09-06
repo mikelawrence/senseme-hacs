@@ -2,10 +2,9 @@
 import logging
 
 from aiosenseme import SensemeDevice
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_OCCUPANCY,
-    BinarySensorEntity,
-)
+from homeassistant.components.binary_sensor import BinarySensorEntity
+
+DEVICE_CLASS_OCCUPANCY = "occupancy"
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity

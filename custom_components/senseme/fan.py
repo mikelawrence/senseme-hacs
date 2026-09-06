@@ -3,13 +3,12 @@ import math
 from typing import Any, List, Optional
 
 from aiosenseme import SensemeFan
-from homeassistant.components.fan import (
-    DIRECTION_FORWARD,
-    DIRECTION_REVERSE,
-    SUPPORT_DIRECTION,
-    SUPPORT_SET_SPEED,
-    FanEntity,
-)
+from homeassistant.components.fan import FanEntity, FanEntityFeature
+
+DIRECTION_FORWARD = "forward"
+DIRECTION_REVERSE = "reverse"
+SUPPORT_DIRECTION = FanEntityFeature.DIRECTION
+SUPPORT_SET_SPEED = FanEntityFeature.SET_SPEED | FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
 from homeassistant.const import CONF_DEVICE
 from homeassistant.util.percentage import (
     percentage_to_ranged_value,

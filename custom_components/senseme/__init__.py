@@ -1,7 +1,10 @@
 """The SenseME integration."""
 import asyncio
 import logging
+import types
 
+import aiosenseme.device
+import aiosenseme.discovery
 from aiosenseme import SensemeDevice
 from aiosenseme import __version__ as aiosenseme_version
 from aiosenseme import async_get_device_by_device_info
@@ -15,6 +18,21 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import CONF_INFO, DOMAIN, UPDATE_RATE
+
+# --- PYTHON 3.14 COMPATIBILITY PATCH ---
+_fake_asyncio = types.ModuleType("fake_asyncio")
+_fake_asyncio.__dict__.update(asyncio.__dict__)
+
+
+async def _safe_wait(fs, *args, **kwargs):
+    tasks = [asyncio.create_task(f) if asyncio.iscoroutine(f) else f for f in fs]
+    return await asyncio.wait(tasks, *args, **kwargs)
+
+
+_fake_asyncio.wait = _safe_wait
+aiosenseme.device.asyncio = _fake_asyncio
+aiosenseme.discovery.asyncio = _fake_asyncio
+# ---------------------------------------
 
 PLATFORMS = [FAN_DOMAIN, LIGHT_DOMAIN, BINARYSENSOR_DOMAIN, SWITCH_DOMAIN]
 
@@ -55,10 +73,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id][CONF_DEVICE] = device
 
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 

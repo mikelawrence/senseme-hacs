@@ -3,17 +3,14 @@ import logging
 from typing import Any
 
 from aiosenseme import SensemeDevice
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR_TEMP,
-    LightEntity,
-)
+from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
 from .const import DOMAIN
+
+ATTR_BRIGHTNESS = "brightness"
+ATTR_COLOR_TEMP = "color_temp"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,9 +33,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
         else:
             name = f"{device.name} Light"
         super().__init__(device, name)
-        self._supported_features = SUPPORT_BRIGHTNESS
-        if device.is_light:
-            self._supported_features |= SUPPORT_COLOR_TEMP
 
     @property
     def unique_id(self) -> str:
@@ -49,6 +43,20 @@ class HASensemeLight(SensemeEntity, LightEntity):
     def is_on(self) -> bool:
         """Return true if light is on."""
         return self._device.light_on
+
+    @property
+    def color_mode(self) -> ColorMode:
+        """Return the color mode of the light."""
+        if self._device.is_light:
+            return ColorMode.COLOR_TEMP
+        return ColorMode.BRIGHTNESS
+
+    @property
+    def supported_color_modes(self) -> set[ColorMode]:
+        """Flag supported color modes."""
+        if self._device.is_light:
+            return {ColorMode.COLOR_TEMP}
+        return {ColorMode.BRIGHTNESS}
 
     @property
     def brightness(self) -> int:
@@ -82,11 +90,6 @@ class HASensemeLight(SensemeEntity, LightEntity):
         color_temp = int(round(1000000.0 / float(self._device.light_color_temp_min)))
         return color_temp
 
-    @property
-    def supported_features(self) -> int:
-        """Flag supported features."""
-        return self._supported_features
-
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the light."""
         brightness = kwargs.get(ATTR_BRIGHTNESS)
@@ -94,12 +97,10 @@ class HASensemeLight(SensemeEntity, LightEntity):
         if color_temp is not None:
             self._device.light_color_temp = int(round(1000000.0 / float(color_temp)))
         if brightness is None:
-            # no brightness, just turn the light on
             self._device.light_on = True
         else:
-            # set the brightness, which will also turn on/off light
             if brightness == 255:
-                brightness = 256  # this will end up as 16 which is max
+                brightness = 256
             self._device.light_brightness = int(brightness / 16)
 
     async def async_turn_off(self, **kwargs: Any) -> None:
