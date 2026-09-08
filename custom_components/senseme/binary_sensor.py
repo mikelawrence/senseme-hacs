@@ -3,7 +3,7 @@ import logging
 
 from aiosenseme import SensemeDevice
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_OCCUPANCY,
+    BinarySensorDeviceClass,
     BinarySensorEntity,
 )
 from homeassistant.const import CONF_DEVICE
@@ -41,4 +41,4 @@ class HASensemeOccupancySensor(SensemeEntity, BinarySensorEntity):
     @property
     def device_class(self) -> str:
         """Return the device class."""
-        return DEVICE_CLASS_OCCUPANCY
+        return BinarySensorDeviceClass.OCCUPANCY

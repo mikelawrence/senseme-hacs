@@ -6,9 +6,8 @@ from aiosenseme import SensemeFan
 from homeassistant.components.fan import (
     DIRECTION_FORWARD,
     DIRECTION_REVERSE,
-    SUPPORT_DIRECTION,
-    SUPPORT_SET_SPEED,
     FanEntity,
+    FanEntityFeature,
 )
 from homeassistant.const import CONF_DEVICE
 from homeassistant.util.percentage import (
@@ -45,12 +44,12 @@ class HASensemeFan(SensemeEntity, FanEntity):
         return f"{self._device.uuid}-FAN"
 
     @property
-    def device_state_attributes(self) -> dict:
+    def extra_state_attributes(self) -> dict:
         """Get the current device state attributes."""
         return {
             "auto_comfort": self._device.fan_autocomfort.capitalize(),
             "smartmode": self._device.fan_smartmode.capitalize(),
-            **super().device_state_attributes,
+            **super().extra_state_attributes,
         }
 
     @property
@@ -66,9 +65,15 @@ class HASensemeFan(SensemeEntity, FanEntity):
         return DIRECTION_REVERSE
 
     @property
-    def supported_features(self) -> int:
+    def supported_features(self) -> FanEntityFeature:
         """Flag supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_DIRECTION
+        return (
+            FanEntityFeature.SET_SPEED
+            | FanEntityFeature.DIRECTION
+            | FanEntityFeature.PRESET_MODE
+            | FanEntityFeature.TURN_ON
+            | FanEntityFeature.TURN_OFF
+        )
 
     @property
     def speed_count(self) -> int:

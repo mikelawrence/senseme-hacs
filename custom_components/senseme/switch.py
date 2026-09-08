@@ -2,7 +2,7 @@
 from typing import Any
 
 from aiosenseme import SensemeFan
-from homeassistant.components.switch import DEVICE_CLASS_SWITCH, SwitchEntity
+from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
 from homeassistant.const import CONF_DEVICE
 
 from . import SensemeEntity
@@ -52,7 +52,7 @@ class HASensemeSwitch(SensemeEntity, SwitchEntity):
     @property
     def device_class(self):
         """Return an device class for this switch."""
-        return DEVICE_CLASS_SWITCH
+        return SwitchDeviceClass.SWITCH
 
     @property
     def unique_id(self):
